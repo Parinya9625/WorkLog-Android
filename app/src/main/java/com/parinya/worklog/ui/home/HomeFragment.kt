@@ -26,6 +26,7 @@ import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDao
 import com.parinya.worklog.db.WorkDatabase
 import com.parinya.worklog.ui.add_work.AddWorkFragment
+import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.items
 import kotlinx.coroutines.coroutineScope
 
@@ -60,9 +61,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         initRecyclerView(view)
 
         binding.fabAdd.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToAddWorkFragment()
+            val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(type = ManageHomeType.Add)
             findNavController().navigate(action)
-//            viewModel.addWork()
         }
     }
 
@@ -91,7 +91,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     WorkLogDialogFragment(dialogBinding.root).show(childFragmentManager, "custom dialog")
                 },
                 onEditSwiped = {
-                    val action = HomeFragmentDirections.actionHomeFragmentToEditWorkFragment(it)
+                    val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
+                        work = it,
+                        type = ManageHomeType.Edit
+                    )
                     findNavController().navigate(action)
                 },
                 onDeleteSwiped = {

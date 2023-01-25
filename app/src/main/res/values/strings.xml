@@ -2,4 +2,17 @@
     <string name="app_name">WorkLog</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submit">Submit</string>
+    <string name="update">Update</string>
+    <string name="problem">Problem</string>
+    <string name="knowledge">Knowledge</string>
+    <string name="knowledge_required">Knowledge *</string>
+    <string name="activity">Activity</string>
+    <string name="activity_required">Activity *</string>
+    <string name="time_out">Time Out</string>
+    <string name="time_out_required">Time Out *</string>
+    <string name="time_in">Time In</string>
+    <string name="time_in_required">Time In *</string>
+    <string name="date">Date</string>
+    <string name="date_required">Date *</string>
 </resources>

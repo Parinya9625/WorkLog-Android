@@ -14,8 +14,8 @@
 <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
 <!--    </style>-->
 
-    <style name="Base.Theme.WorkLog" parent="Theme.Material3.DayNight.NoActionBar">
-
+    <style name="Base.Theme.WorkLog" parent="Theme.Material3.DynamicColors.Light">
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="Theme.WorkLog" parent="Base.Theme.WorkLog" />

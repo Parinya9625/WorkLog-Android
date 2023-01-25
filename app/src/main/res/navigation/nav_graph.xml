@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.parinya.worklog.ui.home.HomeFragment"
+        android:label="Work Log"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_addWorkFragment"
+            app:destination="@id/addWorkFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editWorkFragment"
+            app:destination="@id/editWorkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addWorkFragment"
+        android:name="com.parinya.worklog.ui.add_work.AddWorkFragment"
+        android:label="Add Work"
+        tools:layout="@layout/fragment_add_work" />
+    <fragment
+        android:id="@+id/editWorkFragment"
+        android:name="com.parinya.worklog.ui.edit_work.EditWorkFragment"
+        android:label="Edit Work"
+        tools:layout="@layout/fragment_edit_work">
+        <argument
+            android:name="work"
+            app:argType="com.parinya.worklog.db.Work" />
+    </fragment>
+</navigation>

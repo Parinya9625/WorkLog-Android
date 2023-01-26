@@ -2,28 +2,18 @@ package com.parinya.worklog.ui.manage_work
 
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Toast
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
-import com.parinya.worklog.databinding.FragmentAddWorkBinding
 import com.parinya.worklog.databinding.FragmentManageHomeBinding
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDatabase
-import com.parinya.worklog.ui.add_work.AddWorkViewModel
-import com.parinya.worklog.ui.add_work.AddWorkViewModelFactory
-import com.parinya.worklog.ui.edit_work.EditWorkFragmentArgs
 import com.parinya.worklog.util.Util
 
 enum class ManageHomeType {
@@ -143,5 +133,4 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
             }
         }
     }
-
 }

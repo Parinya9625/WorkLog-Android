@@ -162,7 +162,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val builder = MaterialAlertDialogBuilder(context)
 
         builder.apply {
-            setIcon(R.drawable.baseline_delete_forever_24)
+            setIcon(R.drawable.ic_delete_32)
             setTitle("Confirm delete work")
             setMessage("Are you sure you want to delete this work?")
             setPositiveButton("Delete") { dialog, which ->

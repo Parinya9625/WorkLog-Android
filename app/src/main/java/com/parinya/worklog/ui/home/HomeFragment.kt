@@ -1,6 +1,7 @@
 package com.parinya.worklog.ui.home
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +13,12 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -27,6 +30,7 @@ import com.parinya.worklog.db.WorkDao
 import com.parinya.worklog.db.WorkDatabase
 import com.parinya.worklog.ui.add_work.AddWorkFragment
 import com.parinya.worklog.ui.manage_work.ManageHomeType
+import com.parinya.worklog.util.SwipeHelper
 import com.parinya.worklog.util.items
 import kotlinx.coroutines.coroutineScope
 
@@ -102,6 +106,53 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             )
         }
+
+        ItemTouchHelper(object : SwipeHelper(binding.rvWorks) {
+            override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
+                val buttons = listOf(
+                    deleteWorkButton(viewModel.works.value?.get(position) ?: Work()),
+                    editWorkButton(viewModel.works.value?.get(position) ?: Work()),
+                )
+
+                return buttons
+            }
+        }).attachToRecyclerView(binding.rvWorks)
+
+    }
+
+    private fun editWorkButton(work: Work): SwipeHelper.UnderlayButton {
+        return SwipeHelper.UnderlayButton(
+            this.requireContext(),
+            "Edit",
+            14.0f,
+            Color.rgb(245, 191, 66),
+            object : SwipeHelper.UnderlayButtonClickListener {
+                override fun onClick() {
+                    val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
+                        work = work,
+                        type = ManageHomeType.Edit
+                    )
+                    findNavController().navigate(action)
+                }
+
+            },
+        )
+    }
+
+    private fun deleteWorkButton(work: Work): SwipeHelper.UnderlayButton {
+        return SwipeHelper.UnderlayButton(
+            this.requireContext(),
+            "Delete",
+            14.0f,
+            Color.RED,
+            object : SwipeHelper.UnderlayButtonClickListener {
+                override fun onClick() {
+                    confirmDeleteWorkDialog(requireContext(), work)
+                }
+
+            },
+//            icon = ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_delete_32)
+        )
     }
 
     private fun confirmDeleteWorkDialog(context: Context, work: Work) {

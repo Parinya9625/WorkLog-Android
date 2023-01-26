@@ -91,9 +91,23 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
             requireActivity().supportFragmentManager,
             binding.ipDate,
             onDateSet = {year, month, day ->
-                Toast.makeText(context, "$day / ${month + 1} / $year", Toast.LENGTH_SHORT).show()
-
                 viewModel.setDate(String.format("%02d/%02d/%02d", day, month + 1, year % 100))
+            }
+        )
+
+        Util.convertInputToTimePicker(
+            requireActivity().supportFragmentManager,
+            binding.ipTimeIn,
+            onTimeSet = {hour, minute ->
+                viewModel.setTimeIn(String.format("%02d:%02d", hour, minute))
+            }
+        )
+
+        Util.convertInputToTimePicker(
+            requireActivity().supportFragmentManager,
+            binding.ipTimeOut,
+            onTimeSet = {hour, minute ->
+                viewModel.setTimeOut(String.format("%02d:%02d", hour, minute))
             }
         )
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: FragmentHomeBinding
+    private var works: List<Work> = listOf()
+    private lateinit var itemTouchHelper: ItemTouchHelper
 //    private lateinit var recyclerView: RecyclerView
     private lateinit var dao: WorkDao
 
@@ -65,10 +68,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onResume() {
         super.onResume()
 
-        binding.lifecycleOwner = this
+//        binding.lifecycleOwner = this
 
         dao.getWorks().observe(this) {
             binding.rvWorks.items(it)
+            works = it
         }
     }
 
@@ -104,21 +108,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun attachItemTouchHelper(recyclerView: RecyclerView) {
-        ItemTouchHelper(object : SwipeHelper(recyclerView) {
+        itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerView) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
-                val backupWork = (recyclerView.adapter as WorkRecyclerViewAdapter).getWork(position) ?: Work()
-
                 val buttons = listOf(
-                    deleteWorkButton(viewModel.works.value?.getOrNull(position) ?: backupWork),
-                    editWorkButton(viewModel.works.value?.getOrNull(position) ?: backupWork),
+                    deleteWorkButton(position),
+                    editWorkButton(position),
                 )
 
                 return buttons
             }
-        }).attachToRecyclerView(binding.rvWorks)
+        })
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
     }
 
-    private fun editWorkButton(work: Work): SwipeHelper.UnderlayButton {
+    private fun editWorkButton(position: Int): SwipeHelper.UnderlayButton {
         return SwipeHelper.UnderlayButton(
             this.requireContext(),
             "Edit",
@@ -127,7 +131,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
-                        work = work,
+                        work = works[position],
                         type = ManageHomeType.Edit
                     )
                     findNavController().navigate(action)
@@ -137,7 +141,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
     }
 
-    private fun deleteWorkButton(work: Work): SwipeHelper.UnderlayButton {
+    private fun deleteWorkButton(position: Int): SwipeHelper.UnderlayButton {
         return SwipeHelper.UnderlayButton(
             this.requireContext(),
             "Delete",
@@ -145,7 +149,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             Color.RED,
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
-                    confirmDeleteWorkDialog(requireContext(), work)
+                    confirmDeleteWorkDialog(requireContext(), works[position])
+
                 }
 
             },

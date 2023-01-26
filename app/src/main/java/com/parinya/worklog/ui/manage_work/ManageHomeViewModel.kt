@@ -96,6 +96,14 @@ class ManageHomeViewModel(
         _date.value = date
     }
 
+    fun setTimeIn(time: String) {
+        _timeIn.value = time
+    }
+
+    fun setTimeOut(time: String) {
+        _timeOut.value = time
+    }
+
     fun saveWork() {
         viewModelScope.launch {
             dao.insertWork(getAddWork())

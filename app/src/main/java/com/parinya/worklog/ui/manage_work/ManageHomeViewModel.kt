@@ -3,6 +3,8 @@ package com.parinya.worklog.ui.manage_work
 import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -90,6 +92,10 @@ class ManageHomeViewModel(
         )
     }
 
+    fun setDate(date: String) {
+        _date.value = date
+    }
+
     fun saveWork() {
         viewModelScope.launch {
             dao.insertWork(getAddWork())
@@ -100,6 +106,11 @@ class ManageHomeViewModel(
         viewModelScope.launch {
             dao.updateWork(getUpdateWork())
         }
+    }
+
+
+    fun testOnClickInVM() {
+        Log.i("WorkLog >", "Test on clicked !")
     }
 
 }

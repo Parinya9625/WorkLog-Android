@@ -4,22 +4,16 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
-import android.widget.Toolbar
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.parinya.worklog.R
@@ -28,11 +22,9 @@ import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDao
 import com.parinya.worklog.db.WorkDatabase
-import com.parinya.worklog.ui.add_work.AddWorkFragment
 import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.SwipeHelper
 import com.parinya.worklog.util.items
-import kotlinx.coroutines.coroutineScope
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -73,9 +65,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onResume() {
         super.onResume()
 
-            dao.getWorks().observe(this) {
-                binding.rvWorks.items(it)
-            }
+        binding.lifecycleOwner = this
+
+        dao.getWorks().observe(this) {
+            binding.rvWorks.items(it)
+        }
     }
 
     private fun initRecyclerView(view: View) {
@@ -106,18 +100,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             )
         }
+        attachItemTouchHelper(binding.rvWorks)
+    }
 
-        ItemTouchHelper(object : SwipeHelper(binding.rvWorks) {
+    private fun attachItemTouchHelper(recyclerView: RecyclerView) {
+        ItemTouchHelper(object : SwipeHelper(recyclerView) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
+                val backupWork = (recyclerView.adapter as WorkRecyclerViewAdapter).getWork(position) ?: Work()
+
                 val buttons = listOf(
-                    deleteWorkButton(viewModel.works.value?.get(position) ?: Work()),
-                    editWorkButton(viewModel.works.value?.get(position) ?: Work()),
+                    deleteWorkButton(viewModel.works.value?.getOrNull(position) ?: backupWork),
+                    editWorkButton(viewModel.works.value?.getOrNull(position) ?: backupWork),
                 )
 
                 return buttons
             }
         }).attachToRecyclerView(binding.rvWorks)
-
     }
 
     private fun editWorkButton(work: Work): SwipeHelper.UnderlayButton {

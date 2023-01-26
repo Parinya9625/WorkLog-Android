@@ -2,10 +2,13 @@ package com.parinya.worklog.ui.manage_work
 
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
@@ -21,6 +24,7 @@ import com.parinya.worklog.db.WorkDatabase
 import com.parinya.worklog.ui.add_work.AddWorkViewModel
 import com.parinya.worklog.ui.add_work.AddWorkViewModelFactory
 import com.parinya.worklog.ui.edit_work.EditWorkFragmentArgs
+import com.parinya.worklog.util.Util
 
 enum class ManageHomeType {
     Add,
@@ -38,10 +42,11 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_manage_home, container, false)
+        binding.lifecycleOwner = this
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,8 +73,6 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
                     }
                 }
             }
-
-
         } else if (pageType == ManageHomeType.Edit) {
             viewModel.setWork(work ?: Work())
 
@@ -82,9 +85,17 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
                     }
                 }
             }
-
-
         }
+
+        Util.convertInputToDatePicker(
+            requireActivity().supportFragmentManager,
+            binding.ipDate,
+            onDateSet = {year, month, day ->
+                Toast.makeText(context, "$day / ${month + 1} / $year", Toast.LENGTH_SHORT).show()
+
+                viewModel.setDate(String.format("%02d/%02d/%02d", day, month + 1, year % 100))
+            }
+        )
     }
 
     private fun isAllInputValidated(): Boolean {

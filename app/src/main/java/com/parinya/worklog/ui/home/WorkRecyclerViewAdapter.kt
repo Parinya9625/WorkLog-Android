@@ -89,6 +89,10 @@ class WorkRecyclerViewAdapter(
         return worksList[position].viewType
     }
 
+    fun getWork(index: Int): Work? {
+        return worksList.getOrNull(index)
+    }
+
     fun updateWorks(works: List<Work>) {
         DiffUtil.calculateDiff(WorksDiffCallBack(worksList, works)).dispatchUpdatesTo(this)
 

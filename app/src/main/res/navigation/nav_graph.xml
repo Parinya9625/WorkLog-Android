@@ -11,28 +11,8 @@
         android:label="Work Log"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_addWorkFragment"
-            app:destination="@id/addWorkFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_editWorkFragment"
-            app:destination="@id/editWorkFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_manageHomeFragment"
             app:destination="@id/manageHomeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/addWorkFragment"
-        android:name="com.parinya.worklog.ui.add_work.AddWorkFragment"
-        android:label="Add Work"
-        tools:layout="@layout/fragment_add_work" />
-    <fragment
-        android:id="@+id/editWorkFragment"
-        android:name="com.parinya.worklog.ui.edit_work.EditWorkFragment"
-        android:label="Edit Work"
-        tools:layout="@layout/fragment_edit_work">
-        <argument
-            android:name="work"
-            app:argType="com.parinya.worklog.db.Work" />
     </fragment>
     <fragment
         android:id="@+id/manageHomeFragment"

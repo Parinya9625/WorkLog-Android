@@ -8,8 +8,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 
 @BindingAdapter("items")
@@ -38,15 +36,11 @@ fun TextView.epochSecToDateString(sec: Long) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @BindingAdapter("formatDateText")
-fun TextView.formatDateText(date: String) {
+fun TextView.formatDateText(dateInMS: Long) {
     try {
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yy")
-        val localDate = LocalDate.parse(date, formatter)
-
-        val formatterV2 = DateTimeFormatter.ofPattern("dd MMMM y")
-        this.text = localDate.format(formatterV2)
+        this.text = Util.dateToString(dateInMS)
     } catch (e: java.lang.Exception) {
-        this.text = date
+        this.text = dateInMS.toString()
     }
 }
 

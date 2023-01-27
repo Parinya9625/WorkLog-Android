@@ -80,8 +80,11 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
         Util.convertInputToDatePicker(
             requireActivity().supportFragmentManager,
             binding.ipDate,
-            onDateSet = {year, month, day ->
-                viewModel.setDate(String.format("%02d/%02d/%02d", day, month + 1, year % 100))
+            onDateSet = {calendar ->
+                viewModel.setDate(
+                    inString = Util.dateToString(calendar.timeInMillis),
+                    inMS = calendar.timeInMillis,
+                )
             }
         )
 

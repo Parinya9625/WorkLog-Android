@@ -3,20 +3,20 @@ package com.parinya.worklog.ui.manage_work
 import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDao
+import com.parinya.worklog.util.Util
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.O)
 class ManageHomeViewModel(
     private val dao: WorkDao
 ): ViewModel() {
@@ -25,6 +25,9 @@ class ManageHomeViewModel(
 
     val _date = MutableLiveData<String>(getCurrentDateInString())
     val date: LiveData<String> = _date
+
+    val _dateDB = MutableLiveData<Long>(MaterialDatePicker.todayInUtcMilliseconds())
+    val dateDB: LiveData<Long> = _dateDB
 
     val _timeIn = MutableLiveData<String>(getCurrentTimeInString())
     val timeIn: LiveData<String> = _timeIn
@@ -43,7 +46,7 @@ class ManageHomeViewModel(
 
     private fun getCurrentDateInString(): String {
         val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd MMMM y", Locale.getDefault())
         val dateStr = formatter.format(date)
 
         return dateStr
@@ -60,7 +63,8 @@ class ManageHomeViewModel(
     fun setWork(work: Work) {
         _work = work
 
-        _date.value = work.date
+        _date.value = Util.dateToString(work.date)
+        _dateDB.value = work.date
         _timeIn.value = work.timeIn
         _timeOut.value = work.timeOut
         _activity.value = work.activity
@@ -70,7 +74,7 @@ class ManageHomeViewModel(
 
     private fun getAddWork(): Work {
         return Work(
-            date = date.value ?: "",
+            date = dateDB.value ?: 0L,
             timeIn = timeIn.value ?: "",
             timeOut = timeOut.value ?: "",
             activity = activity.value ?: "",
@@ -83,7 +87,7 @@ class ManageHomeViewModel(
         return Work(
             id = _work.id,
             viewType = _work.viewType,
-            date = date.value ?: "",
+            date = dateDB.value ?: 0L,
             timeIn = timeIn.value ?: "",
             timeOut = timeOut.value ?: "",
             activity = activity.value ?: "",
@@ -92,8 +96,9 @@ class ManageHomeViewModel(
         )
     }
 
-    fun setDate(date: String) {
-        _date.value = date
+    fun setDate(inString: String, inMS: Long) {
+        _date.value = inString
+        _dateDB.value = inMS
     }
 
     fun setTimeIn(time: String) {

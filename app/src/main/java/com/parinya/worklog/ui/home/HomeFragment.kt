@@ -4,20 +4,22 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.parinya.worklog.FilterSortedBy
 import com.parinya.worklog.R
+import com.parinya.worklog.SharedViewModel
 import com.parinya.worklog.databinding.FragmentHomeBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.Work
@@ -30,11 +32,16 @@ import com.parinya.worklog.util.items
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var viewModel: HomeViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
     private var works: List<Work> = listOf()
     private lateinit var itemTouchHelper: ItemTouchHelper
 //    private lateinit var recyclerView: RecyclerView
     private lateinit var dao: WorkDao
+
+    // FILTER
+    private var _sortedBy = FilterSortedBy.None
+    private var _dateRange = Pair<Long, Long>(0, 0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,11 +75,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onResume() {
         super.onResume()
 
-//        binding.lifecycleOwner = this
+        sharedViewModel.sortedBy.observe(this) {sortedBy ->
+            _sortedBy = sortedBy
+            updateRecyclerView()
+        }
+        sharedViewModel.pairDateRange.observe(this) {dateRange ->
+            _dateRange = dateRange
+            updateRecyclerView()
+        }
 
-        dao.getWorks().observe(this) {
-            binding.rvWorks.items(it)
-            works = it
+        updateRecyclerView()
+    }
+
+    private fun updateRecyclerView() {
+        dao.getWorks(_sortedBy, _dateRange.first, _dateRange.second).observe(this) {worksList ->
+            binding.rvWorks.items(worksList)
+            works = worksList
         }
     }
 

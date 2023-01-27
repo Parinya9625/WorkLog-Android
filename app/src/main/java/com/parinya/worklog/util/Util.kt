@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.InputType
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
@@ -27,10 +28,37 @@ class Util {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        fun dateToString(ms: Long, pattern: String = "dd MMMM y"): String {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = ms
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = calendar.get(Calendar.MONTH)
+            val year = calendar.get(Calendar.YEAR)
+
+            val date = String.format("%02d/%02d/%d", day, month + 1, year)
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/y")
+            val localDate = LocalDate.parse(date, formatter)
+
+            val formatterV2 = DateTimeFormatter.ofPattern(pattern)
+            return localDate.format(formatterV2)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun localDateToCalendar(localDate: LocalDate): Calendar {
+            val calendar = Calendar.getInstance()
+
+            calendar.set(Calendar.DAY_OF_MONTH, localDate.dayOfMonth)
+            calendar.set(Calendar.MONTH, localDate.monthValue - 1)
+            calendar.set(Calendar.YEAR, localDate.year)
+
+            return calendar
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun convertInputToDatePicker(
             fragmentManager: FragmentManager,
             textInputLayout: TextInputLayout,
-            onDateSet: (year: Int, month: Int, day: Int) -> Unit = {y, m, d -> }
+            onDateSet: (calendar: Calendar) -> Unit = {},
         ) {
             if (textInputLayout.editText != null) {
                 val editText = textInputLayout.editText as EditText
@@ -44,13 +72,10 @@ class Util {
                         val datePicker = MaterialDatePicker.Builder.datePicker()
                             .setSelection(
                                 if (text.toString().isNotBlank()) {
-                                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yy")
+                                    val formatter = DateTimeFormatter.ofPattern("dd MMMM y")
                                     val localDate = LocalDate.parse(text.toString(), formatter)
-                                    calendar.set(Calendar.DAY_OF_MONTH, localDate.dayOfMonth)
-                                    calendar.set(Calendar.MONTH, localDate.monthValue - 1)
-                                    calendar.set(Calendar.YEAR, localDate.year)
 
-                                    calendar.timeInMillis
+                                    localDateToCalendar(localDate).timeInMillis
                                 } else {
                                     MaterialDatePicker.todayInUtcMilliseconds()
                                 }
@@ -60,11 +85,56 @@ class Util {
                         datePicker.addOnPositiveButtonClickListener {
                             calendar.timeInMillis = it
 
-                            onDateSet(
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH),
-                            )
+                            onDateSet(calendar)
+                        }
+                        datePicker.show(fragmentManager, "DatePicker")
+                    }
+                }
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun convertInputToDateRangePicker(
+            fragmentManager: FragmentManager,
+            textInputLayout: TextInputLayout,
+            onDateRangeSet: (from: Calendar, to: Calendar) -> Unit = {from, to ->},
+            splitChar: String = "➜",
+        ) {
+            if (textInputLayout.editText != null) {
+                val editText = textInputLayout.editText as EditText
+
+                editText.apply {
+                    isClickable = true
+                    isFocusable = false
+                    inputType = InputType.TYPE_NULL
+                    setOnClickListener {
+                        val datePickerBuilder = MaterialDatePicker.Builder.dateRangePicker()
+                        try {
+                            if (editText.text.isNotBlank()) {
+                                val dates = editText.text.split(splitChar)
+                                val formatter = DateTimeFormatter.ofPattern("dd MMM y")
+
+                                val fromDate = LocalDate.parse(dates[0].trim(), formatter)
+                                val toDate = LocalDate.parse(dates[1].trim(), formatter)
+
+                                datePickerBuilder.setSelection(
+                                    Pair(
+                                        localDateToCalendar(fromDate).timeInMillis,
+                                        localDateToCalendar(toDate).timeInMillis
+                                    )
+                                )
+                            }
+                        } catch (_: Exception) { }
+
+                        val datePicker = datePickerBuilder.build()
+                        datePicker.addOnPositiveButtonClickListener {
+                            val fromCalandar = Calendar.getInstance()
+                            val toCalandar = Calendar.getInstance()
+
+                            fromCalandar.timeInMillis = it.first
+                            toCalandar.timeInMillis = it.second
+
+                            onDateRangeSet(fromCalandar, toCalandar)
                         }
                         datePicker.show(fragmentManager, "DatePicker")
                     }

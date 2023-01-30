@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var sharedViewModel: SharedViewModel
     lateinit var mainMenu: Menu
+    private var showOptionMenu = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         if (menu != null) {
             mainMenu = menu
         }
+
+        menu?.children?.forEach {
+            it.isVisible = showOptionMenu
+        }
+
         return true
     }
 
@@ -57,6 +64,10 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
+    fun setVisibleOptionsMenu(value: Boolean) {
+        showOptionMenu = value
+        invalidateOptionsMenu()
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun filterBottomSheetDialog() {

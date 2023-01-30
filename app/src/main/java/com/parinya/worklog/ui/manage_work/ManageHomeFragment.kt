@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputLayout
+import com.parinya.worklog.MainActivity
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentManageHomeBinding
 import com.parinya.worklog.db.Work
@@ -34,6 +35,19 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_manage_home, container, false)
         binding.lifecycleOwner = this
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setVisibleOptionsMenu(false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        setVisibleOptionsMenu(true)
+    }
+    private fun setVisibleOptionsMenu(value: Boolean) {
+        (activity as MainActivity).setVisibleOptionsMenu(value)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

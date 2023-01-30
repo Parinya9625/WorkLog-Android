@@ -40,6 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="@string/time_in"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -62,6 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="@string/time_out"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -93,6 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="@string/activity"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -127,6 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="@string/knowledge"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -161,6 +165,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="@string/problem"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 

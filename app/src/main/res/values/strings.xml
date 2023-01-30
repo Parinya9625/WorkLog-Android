@@ -6,18 +6,34 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="problem">Problem</string>
+    <string name="problem_colon">Problem :</string>
     <string name="knowledge">Knowledge</string>
+    <string name="knowledge_colon">Knowledge :</string>
     <string name="knowledge_required">Knowledge *</string>
     <string name="activity">Activity</string>
+    <string name="activity_colon">Activity :</string>
     <string name="activity_required">Activity *</string>
     <string name="time_out">Time Out</string>
+    <string name="time_out_colon">Time Out :</string>
     <string name="time_out_required">Time Out *</string>
     <string name="time_in">Time In</string>
+    <string name="time_in_colon">Time In :</string>
     <string name="time_in_required">Time In *</string>
     <string name="date">Date</string>
     <string name="date_required">Date *</string>
+    <string name="sort_by">Sort by</string>
+    <string name="date_ascending">Date ascending</string>
+    <string name="date_descending">Date descending</string>
+    <string name="uncompleted">Uncompleted</string>
+    <string name="date_range">Date Range</string>
+    <string name="done">Done</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+
     <string name="confirm_delete_work_title">Confirm delete work</string>
     <string name="confirm_delete_work_message">Are you sure you want to delete this work?</string>
     <string name="error_fill_out_filed">Please fill out this field.</string>
+    <string name="no_search_result_found">No search result found for this keyword</string>
 
 </resources>

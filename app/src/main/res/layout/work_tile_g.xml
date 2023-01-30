@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Time In : " />
+                    android:text="@string/time_in_colon" />
 
                 <TextView
                     android:id="@+id/tvTimeIn"
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Time Out :" />
+                    android:text="@string/time_out_colon" />
 
                 <TextView
                     android:id="@+id/tvTimeOut"
@@ -77,11 +77,11 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Activity : " />
+                    android:text="@string/activity_colon" />
 
                 <TextView
                     android:id="@+id/tvActivity"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_weight="1"
@@ -101,11 +101,11 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Knowledge : " />
+                    android:text="@string/knowledge_colon" />
 
                 <TextView
                     android:id="@+id/tvKnowledge"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_weight="1"
@@ -124,7 +124,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Problem : " />
+                    android:text="@string/problem_colon" />
 
                 <TextView
                     android:id="@+id/tvProblem"

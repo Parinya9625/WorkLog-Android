@@ -123,12 +123,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                         builder.apply {
                             setIcon(R.drawable.ic_delete_32)
-                            setTitle("Confirm delete work")
-                            setMessage("Are you sure you want to delete this work?")
-                            setPositiveButton("Delete") { dialog, which ->
+                            setTitle(getString(R.string.confirm_delete_work_title))
+                            setMessage(getString(R.string.confirm_delete_work_message))
+                            setPositiveButton(getString(R.string.delete)) { dialog, which ->
                                 viewModel.deleteWork(works[position])
                             }
-                            setNegativeButton("Cancel") { dialog, which ->
+                            setNegativeButton(getString(R.string.cancel)) { dialog, which ->
 
                             }
                             show()

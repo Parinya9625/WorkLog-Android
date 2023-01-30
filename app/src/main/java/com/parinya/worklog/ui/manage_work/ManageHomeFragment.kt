@@ -120,7 +120,7 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
     }
 
     private fun isAllInputValidated(): Boolean {
-        val errorMessage = "Please fill out this field."
+        val errorMessage = getString(R.string.error_fill_out_filed)
         var activity: Boolean = true
         var knowledge: Boolean = true
         var timeOut: Boolean = true

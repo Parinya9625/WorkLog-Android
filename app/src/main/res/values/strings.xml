@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">WorkLog</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="submit">Submit</string>
     <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
     <string name="problem">Problem</string>
     <string name="knowledge">Knowledge</string>
     <string name="knowledge_required">Knowledge *</string>
@@ -15,4 +16,8 @@
     <string name="time_in_required">Time In *</string>
     <string name="date">Date</string>
     <string name="date_required">Date *</string>
+    <string name="confirm_delete_work_title">Confirm delete work</string>
+    <string name="confirm_delete_work_message">Are you sure you want to delete this work?</string>
+    <string name="error_fill_out_filed">Please fill out this field.</string>
+
 </resources>

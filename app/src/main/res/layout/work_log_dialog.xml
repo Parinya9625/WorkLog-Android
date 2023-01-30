@@ -85,7 +85,7 @@
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
-                autoHide="@{work.knowledge}"
+                autoHide="@{work.activity}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="4dp"

@@ -38,6 +38,18 @@ interface WorkDao {
     )
     fun getWorks(sortedBy: FilterSortedBy, dateRangeFrom: Long = 0, dateRangeTo: Long = 0) : LiveData<List<Work>>
 
+    @Query(
+        "SELECT * FROM works " +
+            "WHERE " +
+                "CASE WHEN :query != '' " +
+                    "THEN (" +
+                        "activity LIKE '%' || :query || '%' OR " +
+                        "knowledge LIKE '%' || :query || '%' OR " +
+                        "problem LIKE '%' || :query || '%'" +
+                    ") END "
+    )
+    fun searchWorks(query: String): LiveData<List<Work>>
+
     @Query("SELECT * FROM works WHERE id = :id")
     fun getWork(id: Int): LiveData<Work>
 

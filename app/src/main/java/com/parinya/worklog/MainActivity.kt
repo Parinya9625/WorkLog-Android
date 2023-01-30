@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.parinya.worklog.databinding.FilterSheetBinding
+import com.parinya.worklog.ui.home.HomeFragmentDirections
 import com.parinya.worklog.util.Util
 import java.util.*
 
@@ -56,6 +57,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.toString()) {
             "Filter" -> filterBottomSheetDialog()
+            "Search" -> {
+                val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
+                navController.navigate(action)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

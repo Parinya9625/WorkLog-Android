@@ -1,105 +1,83 @@
-package com.parinya.worklog.ui.home
+package com.parinya.worklog.ui.search
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.parinya.worklog.FilterSortedBy
+import com.parinya.worklog.MainActivity
 import com.parinya.worklog.R
-import com.parinya.worklog.SharedViewModel
-import com.parinya.worklog.databinding.FragmentHomeBinding
+import com.parinya.worklog.databinding.FragmentSearchBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDao
 import com.parinya.worklog.db.WorkDatabase
+import com.parinya.worklog.ui.home.WorkLogDialogFragment
+import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.SwipeHelper
 import com.parinya.worklog.util.WorkTileSwipeButton
-import com.parinya.worklog.util.items
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
-    private lateinit var viewModel: HomeViewModel
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentSearchBinding
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var dao: WorkDao
     private var works: List<Work> = listOf()
     private lateinit var itemTouchHelper: ItemTouchHelper
-//    private lateinit var recyclerView: RecyclerView
-    private lateinit var dao: WorkDao
-
-    // FILTER
-    private var _sortedBy = FilterSortedBy.None
-    private var _dateRange = Pair<Long, Long>(0, 0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onResume() {
+        super.onResume()
+        setVisibleOptionsMenu(false)
+
+        viewModel.searchQuery.observe(viewLifecycleOwner) {query ->
+            dao.searchWorks(query.trim()).observe(viewLifecycleOwner) {works ->
+                viewModel.searchResult.value = works
+                this.works = works
+
+                binding.bannerNoSearchResult.isVisible = query.isNotBlank() && works.isEmpty()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        setVisibleOptionsMenu(true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dao = WorkDatabase.getInstance(view.context).workDao()
-        val factory = HomeViewModelFactory(dao)
-        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+        val factory = SearchViewModelFactory(dao)
+        viewModel = ViewModelProvider(this, factory)[SearchViewModel::class.java]
 
         binding.viewModel = viewModel
 
-        initRecyclerView(view)
-
-        binding.fabAdd.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(type = ManageHomeType.Add)
-            findNavController().navigate(action)
-        }
+        initRecyclerView()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        sharedViewModel.sortedBy.observe(this) {sortedBy ->
-            _sortedBy = sortedBy
-            updateRecyclerView()
-        }
-        sharedViewModel.pairDateRange.observe(this) {dateRange ->
-            _dateRange = dateRange
-            updateRecyclerView()
-        }
-
-        updateRecyclerView()
-    }
-
-    private fun updateRecyclerView() {
-        dao.getWorks(_sortedBy, _dateRange.first, _dateRange.second).observe(this) {worksList ->
-            binding.rvWorks.items(worksList)
-            works = worksList
-        }
-    }
-
-    private fun initRecyclerView(view: View) {
-//        recyclerView = view.findViewById<RecyclerView>(R.id.rvWorks)
-        binding.rvWorks.apply {
-//            layoutManager = LinearLayoutManager(context)
-
-            val gridColumnCount = resources.getInteger(R.integer.grid_column_count)
-            layoutManager = GridLayoutManager(context, gridColumnCount)
+    private fun initRecyclerView() {
+        binding.rvSearchResult.apply {
+            layoutManager = LinearLayoutManager(context)
 
             adapter = WorkRecyclerViewAdapter(
                 onClick = {
@@ -107,11 +85,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         layoutInflater, R.layout.work_log_dialog, null, false
                     )
                     dialogBinding.work = it
-                    WorkLogDialogFragment(dialogBinding.root).show(childFragmentManager, "custom dialog")
+                    WorkLogDialogFragment(dialogBinding.root).show(childFragmentManager, "WorkLogDialog")
                 }
             )
+
         }
-        attachItemTouchHelper(binding.rvWorks)
+        attachItemTouchHelper(binding.rvSearchResult)
     }
 
     private fun attachItemTouchHelper(recyclerView: RecyclerView) {
@@ -137,7 +116,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                     WorkTileSwipeButton.EditWorkButton(requireContext()) {
                         val action =
-                            HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
+                            SearchFragmentDirections.actionSearchFragmentToManageHomeFragment(
                                 work = works[position],
                                 type = ManageHomeType.Edit
                             )
@@ -149,5 +128,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)
+
     }
+
+    private fun setVisibleOptionsMenu(value: Boolean) {
+        (activity as MainActivity).setVisibleOptionsMenu(value)
+    }
+
 }

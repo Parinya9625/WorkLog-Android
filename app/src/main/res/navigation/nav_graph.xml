@@ -11,13 +11,26 @@
         android:label="Work Log"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_manageHomeFragment"
+            app:destination="@id/manageHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.parinya.worklog.ui.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_manageHomeFragment"
             app:destination="@id/manageHomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/manageHomeFragment"
         android:name="com.parinya.worklog.ui.manage_work.ManageHomeFragment"
-        android:label="{type} Work" >
+        android:label="{type} Work"
+        tools:layout="@layout/fragment_manage_home" >
         <argument
             android:name="work"
             app:argType="com.parinya.worklog.db.Work"

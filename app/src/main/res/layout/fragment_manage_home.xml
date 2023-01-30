@@ -73,6 +73,7 @@
             android:id="@+id/ipActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            enableClearButton="@{true}"
             android:hint="@string/activity_required">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -86,6 +87,7 @@
             android:id="@+id/ipKnowledge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            enableClearButton="@{true}"
             android:hint="@string/knowledge_required">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -99,6 +101,7 @@
             android:id="@+id/ipProblem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            enableClearButton="@{true}"
             android:hint="@string/problem">
 
             <com.google.android.material.textfield.TextInputEditText

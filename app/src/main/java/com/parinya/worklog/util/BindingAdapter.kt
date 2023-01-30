@@ -1,11 +1,16 @@
 package com.parinya.worklog.util
 
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
+import com.parinya.worklog.R
 import com.parinya.worklog.db.Work
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 
@@ -50,5 +55,48 @@ fun View.autoHide(value: String) {
         this.visibility = View.GONE
     } else {
         this.visibility = View.VISIBLE
+    }
+}
+
+@BindingAdapter("enableClearButton")
+fun TextInputLayout.enableClearButton(isEnable: Boolean) {
+
+    fun setClearButton() {
+        this@enableClearButton.endIconDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_clear_24, null)
+        this.setEndIconOnClickListener {
+            this.editText?.text?.clear()
+        }
+    }
+    fun removeClearButton() {
+        this@enableClearButton.endIconDrawable = null
+        this.setEndIconOnClickListener { }
+    }
+
+    if (isEnable) {
+        this.endIconMode = TextInputLayout.END_ICON_CUSTOM
+
+        this.editText?.apply {
+
+            val textWatcher = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    setClearButton()
+                }
+            }
+
+            setOnFocusChangeListener { view, isFocus ->
+                if (isFocus) {
+                    this.addTextChangedListener(textWatcher)
+                    if (this.text.toString().isNotBlank()) {
+                        setClearButton()
+                    }
+                } else {
+                    this.removeTextChangedListener(textWatcher)
+                    removeClearButton()
+                }
+            }
+        }
     }
 }

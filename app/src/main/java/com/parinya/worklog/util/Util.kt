@@ -168,6 +168,7 @@ class Util {
                         }
 
                         timePicker.setTimeFormat(TimeFormat.CLOCK_24H)
+                        timePicker.setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
 
                         val timePickerBuild = timePicker.build()
                         timePickerBuild.addOnPositiveButtonClickListener {

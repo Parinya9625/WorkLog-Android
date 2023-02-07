@@ -24,6 +24,7 @@ import com.parinya.worklog.db.Work
 import com.parinya.worklog.db.WorkDao
 import com.parinya.worklog.db.WorkDatabase
 import com.parinya.worklog.ui.manage_work.ManageHomeType
+import com.parinya.worklog.util.SwipeButton
 import com.parinya.worklog.util.SwipeHelper
 import com.parinya.worklog.util.WorkTileSwipeButton
 import com.parinya.worklog.util.items
@@ -115,37 +116,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun attachItemTouchHelper(recyclerView: RecyclerView) {
-        itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerView) {
-            override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
-                val buttons = listOf(
-                    WorkTileSwipeButton.DeleteWorkButton(requireContext()) {
-                        val builder = MaterialAlertDialogBuilder(requireContext())
+        itemTouchHelper = ItemTouchHelper(object: SwipeHelper(recyclerView) {
+            override fun swipeButtons(position: Int): List<SwipeButton> {
+                return listOf(
+                    WorkTileSwipeButton.DeleteWorkSwipeButton(
+                        requireContext(),
+                        onClick = {
+                            val builder = MaterialAlertDialogBuilder(requireContext())
 
-                        builder.apply {
-                            setIcon(R.drawable.ic_delete_32)
-                            setTitle(getString(R.string.confirm_delete_work_title))
-                            setMessage(getString(R.string.confirm_delete_work_message))
-                            setPositiveButton(getString(R.string.delete)) { dialog, which ->
-                                viewModel.deleteWork(works[position])
-                            }
-                            setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                            builder.apply {
+                                setIcon(R.drawable.ic_delete_32)
+                                setTitle(getString(R.string.confirm_delete_work_title))
+                                setMessage(getString(R.string.confirm_delete_work_message))
+                                setPositiveButton(getString(R.string.delete)) { dialog, which ->
+                                    viewModel.deleteWork(works[position])
+                                }
+                                setNegativeButton(getString(R.string.cancel)) { dialog, which ->
 
+                                }
+                                show()
                             }
-                            show()
                         }
-                    },
-
-                    WorkTileSwipeButton.EditWorkButton(requireContext()) {
-                        val action =
-                            HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
-                                work = works[position],
-                                type = ManageHomeType.Edit
-                            )
-                        findNavController().navigate(action)
-                    }
+                    ),
+                    WorkTileSwipeButton.EditWorkSwipeButton(
+                        requireContext(),
+                        onClick = {
+                            val action =
+                                HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
+                                    work = works[position],
+                                    type = ManageHomeType.Edit
+                                )
+                            findNavController().navigate(action)
+                        },
+                    ),
                 )
-
-                return buttons
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)

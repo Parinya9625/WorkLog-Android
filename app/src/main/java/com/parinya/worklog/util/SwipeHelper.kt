@@ -1,75 +1,89 @@
+/*
+    SwipeHelper V.1.0 by Parinya Wongmanee
+
+    [Class]
+    SwipeHelper  -  object for ItemTouchhelper
+    SwipeButton  -  button in SwipeHelper
+    SwipeTitle   -  text inside button
+    SwipeIcon    -  icon inside button
+
+    [Example Code]
+    val itemTouchHelper = ItemTouchHelper(
+       object: SwipeHelper(recyclerView) {
+            override fun swipeButtons(position: Int): List<SwipeButton> {
+                return listOf(
+                    SwipeButton(
+                        context = context,
+                        backgroundColor = Color.RED,
+                        swipeTitle = SwipeTitle(
+                            context,
+                            "Hello World !"
+                        ),
+                        swipeIcon = SwipeIcon(
+                            applicationContext,
+                            ContextCompat.getDrawable(context, R.drawable.baseline_face_6_24)!!,
+                        ),
+                        onClick = {
+                            Toast.makeText(context, "RED $position", Toast.LENGTH_SHORT).show()
+                        }
+                    ),
+                    SwipeButton(...),
+                )
+            }
+       }
+    )
+ */
+
 package com.parinya.worklog.util
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.updateBounds
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.max
 
+@SuppressLint("ClickableViewAccessibility")
 abstract class SwipeHelper(
-    private val recyclerView: RecyclerView
-) : ItemTouchHelper.SimpleCallback(
+    private val recyclerView: RecyclerView,
+): ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
-    ItemTouchHelper.LEFT
+    ItemTouchHelper.LEFT,
 ) {
-    private var swipedPosition = -1
-    private val buttonsBuffer: MutableMap<Int, List<UnderlayButton>> = mutableMapOf()
-    private val recoverQueue = object : LinkedList<Int>() {
-        override fun add(element: Int): Boolean {
-            if (contains(element)) return false
-            return super.add(element)
-        }
-    }
+    private var currentSwipePosition = -1
+    private var recoverSwipeBuffer = LinkedList<Int>()
+    private var allButtons: MutableMap<Int, List<SwipeButton>> = mutableMapOf()
 
-    @SuppressLint("ClickableViewAccessibility")
-    private val touchListener = View.OnTouchListener { _, event ->
-        if (swipedPosition < 0) return@OnTouchListener false
-        buttonsBuffer[swipedPosition]?.forEach { it.handle(event) }
-        recoverQueue.add(swipedPosition)
-        swipedPosition = -1
-        recoverSwipedItem()
-        true
-    }
+    abstract fun swipeButtons(position: Int): List<SwipeButton>
 
     init {
-        recyclerView.setOnTouchListener(touchListener)
-    }
+        recyclerView.setOnTouchListener { view, motionEvent ->
+            if (currentSwipePosition < 0) return@setOnTouchListener false
 
-    private fun recoverSwipedItem() {
-        while (!recoverQueue.isEmpty()) {
-            val position = recoverQueue.poll() ?: return
-            recyclerView.adapter?.notifyItemChanged(position)
+            recoverSwipeBuffer.add(currentSwipePosition)
+            allButtons[currentSwipePosition]?.forEach { swipeButton ->
+                swipeButton.handleClick(motionEvent)
+            }
+
+            currentSwipePosition = -1
+            recoverSwipedItem()
+            true
         }
     }
 
-    private fun drawButtons(
-        canvas: Canvas,
-        buttons: List<UnderlayButton>,
-        itemView: View,
-        dX: Float
-    ) {
-        var right = itemView.right
-        buttons.forEach { button ->
-            val width = button.intrinsicWidth / buttons.intrinsicWidth() * abs(dX)
-            val left = right - width
-            button.draw(
-                canvas,
-                RectF(left, itemView.top.toFloat(), right.toFloat(), itemView.bottom.toFloat()),
-                isFirst = buttons.last() === button,
-                isLast = buttons.first() === button,
-            )
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        return false
+    }
 
-            right = left.toInt()
-        }
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        val position = viewHolder.adapterPosition
+        currentSwipePosition = position
+        recoverSwipedItem()
     }
 
     override fun onChildDraw(
@@ -81,145 +95,197 @@ abstract class SwipeHelper(
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
+        // active list tile position
         val position = viewHolder.adapterPosition
         var maxDX = dX
-        val itemView = viewHolder.itemView
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            // BUTTON ON RIGHT SIDE
             if (dX < 0) {
-                if (!buttonsBuffer.containsKey(position)) {
-                    buttonsBuffer[position] = instantiateUnderlayButton(position)
+                // when button don't set to list tile
+                if (!allButtons.containsKey(position)) {
+                    allButtons[position] = swipeButtons(position)
                 }
-
-                val buttons = buttonsBuffer[position] ?: return
-                if (buttons.isEmpty()) return
-                maxDX = max(-buttons.intrinsicWidth(), dX)
-                drawButtons(c, buttons, itemView, maxDX)
+                val buttons = allButtons[position] ?: return
+                maxDX = max(-buttons.width(), dX)
+                drawActiveButtons(c, buttons, viewHolder.itemView, maxDX)
             }
         }
 
-        super.onChildDraw(
-            c,
-            recyclerView,
-            viewHolder,
-            maxDX,
-            dY,
-            actionState,
-            isCurrentlyActive
-        )
+
+        super.onChildDraw(c, recyclerView, viewHolder, maxDX, dY, actionState, isCurrentlyActive)
     }
 
-    override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
-    ): Boolean {
-        return false
-    }
-
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val position = viewHolder.adapterPosition
-        if (swipedPosition != position) recoverQueue.add(swipedPosition)
-        swipedPosition = position
-        recoverSwipedItem()
-    }
-
-    abstract fun instantiateUnderlayButton(position: Int): List<UnderlayButton>
-
-    //region UnderlayButton
-    interface UnderlayButtonClickListener {
-        fun onClick()
-    }
-
-    class UnderlayButton(
-        private val context: Context,
-        private val title: String,
-        textSize: Float,
-//        @ColorRes private val colorRes: Int,
-        private val color: Int,
-        private val clickListener: UnderlayButtonClickListener,
-        private val icon: Drawable? = null,
-    ) {
-        private var clickableRegion: RectF? = null
-        private val textSizeInPixel: Float = textSize * context.resources.displayMetrics.density // dp to px
-        private val horizontalPadding = 50.0f
-        val intrinsicWidth: Float
-
-        init {
-            val paint = Paint()
-            paint.textSize = textSizeInPixel
-            paint.typeface = Typeface.DEFAULT_BOLD
-            paint.textAlign = Paint.Align.LEFT
-            val titleBounds = Rect()
-            paint.getTextBounds(title, 0, title.length, titleBounds)
-            intrinsicWidth = titleBounds.width() + 2 * horizontalPadding
+    private fun recoverSwipedItem() {
+        while (recoverSwipeBuffer.isNotEmpty()) {
+            val position = recoverSwipeBuffer.poll() ?: return
+            recyclerView.adapter?.notifyItemChanged(position)
         }
+    }
 
-        fun draw(canvas: Canvas, rect: RectF, isFirst: Boolean = false, isLast: Boolean = false) {
-            val paint = Paint()
+    private fun drawActiveButtons(canvas: Canvas, buttons: List<SwipeButton>, itemView: View, dX: Float) {
+        var right: Float = itemView.right.toFloat()
 
-            // Draw background
-            paint.color = color
-            val r = 18f
-            val firstBtnRadius = floatArrayOf(
-                r, r,   // Top left radius in px
-                0f, 0f,   // Top right radius in px
-                0f, 0f,     // Bottom right radius in px
-                r, r      // Bottom left radius in px
+        buttons.forEach { swipeButton ->
+            swipeButton.draw(
+                canvas,
+                RectF(
+                    right - swipeButton.width, // L
+                    itemView.top.toFloat(), // T
+                    right, // R
+                    itemView.bottom.toFloat(), // B
+                ),
+                isLeft = buttons.lastOrNull() == swipeButton,
+                isRight = buttons.firstOrNull() == swipeButton,
             )
-            val lastBtnRadius = floatArrayOf(0f, 0f, r, r, r, r, 0f, 0f,)
-            val onlyBtnRadius = floatArrayOf(r, r, r, r, r, r, r, r)
-            val corners = if (isFirst && isLast) {
-                onlyBtnRadius
-            } else if (isFirst && !isLast) {
-                firstBtnRadius
-            } else if (!isFirst && isLast){
-                lastBtnRadius
-            } else {
-                floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-            }
-            val path = Path()
-            path.addRoundRect(rect, corners, Path.Direction.CW)
-            canvas.drawPath(path, paint)
 
-            // Draw title
-            paint.color = ContextCompat.getColor(context, android.R.color.white)
-            paint.textSize = textSizeInPixel
-            paint.typeface = Typeface.DEFAULT_BOLD
-            paint.textAlign = Paint.Align.LEFT
-
-            val titleBounds = Rect()
-            paint.getTextBounds(title, 0, title.length, titleBounds)
-
-            val y = rect.height() / 2 + titleBounds.height() / 2 - titleBounds.bottom
-            canvas.drawText(title, rect.left + horizontalPadding, rect.top + y, paint)
-
-//            // TODO: Draw icon
-//            if (icon != null) {
-//                icon.setBounds(
-//                    (rect.left + horizontalPadding - 16).toInt(),
-//                    (rect.top + 16).toInt(),
-//                    (rect.right - horizontalPadding + 16).toInt(),
-//                    (rect.top + y).toInt(),
-//                )
-//                icon.draw(canvas)
-//            }
-
-            clickableRegion = rect
-        }
-
-        fun handle(event: MotionEvent) {
-            clickableRegion?.let {
-                if (it.contains(event.x, event.y)) {
-                    clickListener.onClick()
-                }
-            }
+            right -= swipeButton.width
         }
     }
-    //endregion
+
 }
 
-private fun List<SwipeHelper.UnderlayButton>.intrinsicWidth(): Float {
+class SwipeButton(
+    private val context: Context,
+    private val backgroundColor: Int = Color.BLACK,
+    private val swipeIcon: SwipeIcon? = null,
+    private val swipeTitle: SwipeTitle? = null,
+    private val horizontalPadding: Float = 48f,
+    private val onClick: () -> Unit = {},
+) {
+    private var clickableArea: RectF? = null
+
+    val width: Float
+
+    init {
+        val maxIconWidth = (horizontalPadding * 2) + (swipeIcon?.sizeInDensity() ?: 0f)
+        val maxTitleWidth = swipeTitle?.bounds?.width()?.plus(horizontalPadding * 2) ?: 0f
+
+        width = max(maxIconWidth, maxTitleWidth)
+    }
+
+    fun draw(canvas: Canvas, rectF: RectF, isLeft: Boolean = false, isRight: Boolean = false) {
+        clickableArea = rectF
+
+        // --- VALUE ---
+        var paint = Paint()
+        val spacing = 4f * context.resources.displayMetrics.density
+        val cornerRadius = 18f
+
+        var totalContentHeight = 0f
+        totalContentHeight += swipeIcon?.height()?.toFloat() ?: 0f
+        totalContentHeight += swipeTitle?.height()?.toFloat() ?: 0f
+        totalContentHeight += if (swipeIcon != null && swipeTitle != null) spacing else 0f
+
+        val rectCenter = Rect(
+            (rectF.centerX() - (width / 2)).toInt(),
+            (rectF.centerY() - (totalContentHeight / 2)).toInt(),
+            (rectF.centerX() + (width / 2)).toInt(),
+            (rectF.centerY() + (totalContentHeight / 2)).toInt(),
+        )
+
+        // --- DRAW BACKGROUND ---
+        paint = Paint()
+        paint.color = backgroundColor
+
+        val aloneButton = floatArrayOf(cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius)
+        val leftButton = floatArrayOf(cornerRadius, cornerRadius, 0f, 0f, 0f, 0f, cornerRadius, cornerRadius)
+        val rightButton = floatArrayOf(0f, 0f, cornerRadius, cornerRadius, cornerRadius, cornerRadius, 0f, 0f)
+        val middleButton = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+        val corner = when {
+            isLeft && isRight -> aloneButton
+            isLeft -> leftButton
+            isRight -> rightButton
+            else -> middleButton
+        }
+
+        val path = Path()
+        path.addRoundRect(rectF, corner, Path.Direction.CW)
+        canvas.drawPath(path, paint)
+
+        // --- DRAW ICON ---
+        if (swipeIcon != null) {
+            val icon = swipeIcon.getDrawable(rectF.left, rectF.top)
+            val iconBaseBounds = icon.bounds
+            icon.updateBounds(
+                left = rectCenter.centerX() - (iconBaseBounds.width() / 2),
+                top = rectCenter.top,
+                right = rectCenter.centerX() + (iconBaseBounds.width() / 2),
+                bottom = rectCenter.top + swipeIcon.height(),
+            )
+            icon.draw(canvas)
+        }
+
+        // --- DRAW TITLE ---
+        if (swipeTitle != null) {
+            canvas.drawText(
+                swipeTitle.title,
+                (rectCenter.centerX() - (swipeTitle.bounds.width() / 2)).toFloat(),
+                (rectCenter.bottom).toFloat(),
+                swipeTitle.paint,
+            )
+        }
+    }
+
+    fun handleClick(event: MotionEvent) {
+        clickableArea?.let {area ->
+            if (area.contains(event.x, event.y) && event.action == MotionEvent.ACTION_DOWN) {
+                onClick()
+            }
+        }
+    }
+}
+
+data class SwipeIcon(
+    val context: Context,
+    private val drawable: Drawable,
+    val size: Float = 32f,
+    val color: Int? = Color.WHITE,
+) {
+    fun height(): Int {
+        return drawable.bounds.height()
+    }
+
+    fun getDrawable(x: Float, y: Float): Drawable {
+        drawable.setBounds(
+            (x).toInt(),
+            (y).toInt(),
+            (x + sizeInDensity()).toInt(),
+            (y + sizeInDensity()).toInt(),
+        )
+        if (color != null) {
+            drawable.setTint(color)
+        }
+        return drawable
+    }
+
+    fun sizeInDensity(): Float {
+        return size * context.resources.displayMetrics.density
+    }
+}
+
+data class SwipeTitle(
+    val context: Context,
+    val title: String,
+    val fontSize: Float = 12f,
+    val color: Int = Color.WHITE,
+) {
+    val paint = Paint()
+    val bounds = Rect()
+
+    init {
+        paint.color = color
+        paint.textSize = fontSize * context.resources.displayMetrics.density
+        paint.typeface = Typeface.DEFAULT_BOLD
+        paint.getTextBounds(title, 0, title.length, bounds)
+    }
+
+    fun height(): Int {
+        return bounds.height()
+    }
+}
+
+private fun List<SwipeButton>.width(): Float {
     if (isEmpty()) return 0.0f
-    return map { it.intrinsicWidth }.reduce { acc, fl -> acc + fl }
+    return map { it.width }.reduce { acc, fl -> acc + fl }
 }

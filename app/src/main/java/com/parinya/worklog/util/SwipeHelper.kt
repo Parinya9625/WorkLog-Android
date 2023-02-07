@@ -1,5 +1,5 @@
 /*
-    SwipeHelper V.1.0 by Parinya Wongmanee
+    SwipeHelper V.1.1 by Parinya Wongmanee
 
     [Class]
     SwipeHelper  -  object for ItemTouchhelper
@@ -10,7 +10,7 @@
     [Example Code]
     val itemTouchHelper = ItemTouchHelper(
        object: SwipeHelper(recyclerView) {
-            override fun swipeButtons(position: Int): List<SwipeButton> {
+            override fun swipeLeftButtons(position: Int): List<SwipeButton> {
                 return listOf(
                     SwipeButton(
                         context = context,
@@ -30,6 +30,9 @@
                     SwipeButton(...),
                 )
             }
+            override fun swipeRightButtons(position: Int): List<SwipeButton> {
+                return listOf(...)
+            }
        }
     )
  */
@@ -47,27 +50,38 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import kotlin.math.max
+import kotlin.math.min
 
 @SuppressLint("ClickableViewAccessibility")
 abstract class SwipeHelper(
     private val recyclerView: RecyclerView,
 ): ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
-    ItemTouchHelper.LEFT,
+    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
 ) {
+    private var currentSwipeDirection: Int = -1
     private var currentSwipePosition = -1
     private var recoverSwipeBuffer = LinkedList<Int>()
-    private var allButtons: MutableMap<Int, List<SwipeButton>> = mutableMapOf()
+    private var allSwipeLeftButtons: MutableMap<Int, List<SwipeButton>> = mutableMapOf()
+    private var allSwipeRightButtons: MutableMap<Int, List<SwipeButton>> = mutableMapOf()
 
-    abstract fun swipeButtons(position: Int): List<SwipeButton>
+    abstract fun swipeLeftButtons(position: Int): List<SwipeButton>
+    abstract fun swipeRightButtons(position: Int): List<SwipeButton>
 
     init {
         recyclerView.setOnTouchListener { view, motionEvent ->
             if (currentSwipePosition < 0) return@setOnTouchListener false
 
             recoverSwipeBuffer.add(currentSwipePosition)
-            allButtons[currentSwipePosition]?.forEach { swipeButton ->
-                swipeButton.handleClick(motionEvent)
+
+            if (currentSwipeDirection == ItemTouchHelper.LEFT) {
+                allSwipeLeftButtons[currentSwipePosition]?.forEach { swipeButton ->
+                    swipeButton.handleClick(motionEvent)
+                }
+            } else if (currentSwipeDirection == ItemTouchHelper.RIGHT) {
+                allSwipeRightButtons[currentSwipePosition]?.forEach { swipeButton ->
+                    swipeButton.handleClick(motionEvent)
+                }
             }
 
             currentSwipePosition = -1
@@ -100,18 +114,29 @@ abstract class SwipeHelper(
         var maxDX = dX
 
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            // BUTTON ON RIGHT SIDE
             if (dX < 0) {
+                // BUTTON ON RIGHT SIDE
+                currentSwipeDirection = ItemTouchHelper.LEFT
                 // when button don't set to list tile
-                if (!allButtons.containsKey(position)) {
-                    allButtons[position] = swipeButtons(position)
+                if (!allSwipeLeftButtons.containsKey(position)) {
+                    allSwipeLeftButtons[position] = swipeLeftButtons(position)
                 }
-                val buttons = allButtons[position] ?: return
+                val buttons = allSwipeLeftButtons[position] ?: return
                 maxDX = max(-buttons.width(), dX)
+                drawActiveButtons(c, buttons, viewHolder.itemView, maxDX)
+
+            } else if (dX > 0) {
+                // BUTTON ON LEFT SIDE
+                currentSwipeDirection = ItemTouchHelper.RIGHT
+
+                if (!allSwipeRightButtons.containsKey(position)) {
+                    allSwipeRightButtons[position] = swipeRightButtons(position)
+                }
+                val buttons = allSwipeRightButtons[position] ?: return
+                maxDX = min(buttons.width(), dX)
                 drawActiveButtons(c, buttons, viewHolder.itemView, maxDX)
             }
         }
-
 
         super.onChildDraw(c, recyclerView, viewHolder, maxDX, dY, actionState, isCurrentlyActive)
     }
@@ -124,25 +149,44 @@ abstract class SwipeHelper(
     }
 
     private fun drawActiveButtons(canvas: Canvas, buttons: List<SwipeButton>, itemView: View, dX: Float) {
-        var right: Float = itemView.right.toFloat()
+        if (dX < 0) {
+            var right: Float = itemView.right.toFloat()
 
-        buttons.forEach { swipeButton ->
-            swipeButton.draw(
-                canvas,
-                RectF(
-                    right - swipeButton.width, // L
-                    itemView.top.toFloat(), // T
-                    right, // R
-                    itemView.bottom.toFloat(), // B
-                ),
-                isLeft = buttons.lastOrNull() == swipeButton,
-                isRight = buttons.firstOrNull() == swipeButton,
-            )
+            buttons.forEach { swipeButton ->
+                swipeButton.draw(
+                    canvas,
+                    RectF(
+                        right - swipeButton.width, // L
+                        itemView.top.toFloat(), // T
+                        right, // R
+                        itemView.bottom.toFloat(), // B
+                    ),
+                    isLeft = buttons.lastOrNull() == swipeButton,
+                    isRight = buttons.firstOrNull() == swipeButton,
+                )
 
-            right -= swipeButton.width
+                right -= swipeButton.width
+            }
+        } else if (dX > 0) {
+            var left: Float = itemView.left.toFloat()
+
+            buttons.forEach { swipeButton ->
+                swipeButton.draw(
+                    canvas,
+                    RectF(
+                        left, // L
+                        itemView.top.toFloat(), // T
+                        left + swipeButton.width, // R
+                        itemView.bottom.toFloat(), // B
+                    ),
+                    isLeft = buttons.firstOrNull() == swipeButton,
+                    isRight = buttons.lastOrNull() == swipeButton,
+                )
+
+                left += swipeButton.width
+            }
         }
     }
-
 }
 
 class SwipeButton(

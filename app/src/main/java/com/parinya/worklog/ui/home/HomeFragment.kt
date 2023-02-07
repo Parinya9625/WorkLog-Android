@@ -117,7 +117,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun attachItemTouchHelper(recyclerView: RecyclerView) {
         itemTouchHelper = ItemTouchHelper(object: SwipeHelper(recyclerView) {
-            override fun swipeButtons(position: Int): List<SwipeButton> {
+            override fun swipeLeftButtons(position: Int): List<SwipeButton> {
                 return listOf(
                     WorkTileSwipeButton.DeleteWorkSwipeButton(
                         requireContext(),
@@ -150,6 +150,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         },
                     ),
                 )
+            }
+
+            override fun swipeRightButtons(position: Int): List<SwipeButton> {
+                return listOf()
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)

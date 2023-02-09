@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,8 +41,12 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        // Top level fragment (don't show back arrow)
+        val appBarConfig = AppBarConfiguration(setOf(
+            R.id.homeFragment, R.id.noteFragment
+        ))
         setSupportActionBar(toolbar)
-        setupActionBarWithNavController(navController)
+        setupActionBarWithNavController(navController, appBarConfig)
 
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNavigationBar)
         bottomNavigation.setupWithNavController(navController)

@@ -40,4 +40,9 @@
     <string name="shortcut_lbl_addwork">Add work log</string>
     <string name="shortcut_dsb_addwork">Disable message</string>
 
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_note">Notes</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

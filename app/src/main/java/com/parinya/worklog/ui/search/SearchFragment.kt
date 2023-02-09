@@ -17,9 +17,9 @@ import com.parinya.worklog.MainActivity
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentSearchBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDao
-import com.parinya.worklog.db.WorkDatabase
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDao
+import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.ui.home.WorkLogDialogFragment
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 import com.parinya.worklog.ui.manage_work.ManageHomeType

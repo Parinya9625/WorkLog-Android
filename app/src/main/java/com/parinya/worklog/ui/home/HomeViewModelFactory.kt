@@ -2,7 +2,7 @@ package com.parinya.worklog.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.parinya.worklog.db.WorkDao
+import com.parinya.worklog.db.work.WorkDao
 
 class HomeViewModelFactory(
     private val dao: WorkDao

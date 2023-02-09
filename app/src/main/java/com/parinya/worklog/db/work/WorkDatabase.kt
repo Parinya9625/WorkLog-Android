@@ -1,4 +1,4 @@
-package com.parinya.worklog.db
+package com.parinya.worklog.db.work
 
 import android.content.Context
 import androidx.room.Database

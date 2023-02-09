@@ -2,8 +2,8 @@ package com.parinya.worklog.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDao
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDao
 import kotlinx.coroutines.launch
 
 class HomeViewModel(

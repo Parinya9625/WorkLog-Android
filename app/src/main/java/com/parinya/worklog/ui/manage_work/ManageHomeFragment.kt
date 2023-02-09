@@ -13,8 +13,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.MainActivity
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentManageHomeBinding
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDatabase
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.util.Util
 
 enum class ManageHomeType {

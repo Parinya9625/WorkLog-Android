@@ -11,7 +11,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
-import com.parinya.worklog.db.Work
+import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 
 

@@ -20,9 +20,9 @@ import com.parinya.worklog.R
 import com.parinya.worklog.SharedViewModel
 import com.parinya.worklog.databinding.FragmentHomeBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDao
-import com.parinya.worklog.db.WorkDatabase
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDao
+import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.SwipeButton
 import com.parinya.worklog.util.SwipeHelper

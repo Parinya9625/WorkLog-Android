@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDao
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDao
 import kotlinx.coroutines.launch
 
 class SearchViewModel(

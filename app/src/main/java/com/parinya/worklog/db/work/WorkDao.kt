@@ -1,4 +1,4 @@
-package com.parinya.worklog.db
+package com.parinya.worklog.db.work
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

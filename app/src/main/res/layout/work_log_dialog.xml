@@ -4,7 +4,7 @@
     <data>
         <variable
             name="work"
-            type="com.parinya.worklog.db.Work" />
+            type="com.parinya.worklog.db.work.Work" />
     </data>
 
     <ScrollView

@@ -1,4 +1,4 @@
-package com.parinya.worklog.db
+package com.parinya.worklog.db.work
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

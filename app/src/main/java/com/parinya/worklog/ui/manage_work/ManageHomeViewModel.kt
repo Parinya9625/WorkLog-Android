@@ -9,8 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.db.WorkDao
+import com.parinya.worklog.db.work.Work
+import com.parinya.worklog.db.work.WorkDao
 import com.parinya.worklog.util.Util
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

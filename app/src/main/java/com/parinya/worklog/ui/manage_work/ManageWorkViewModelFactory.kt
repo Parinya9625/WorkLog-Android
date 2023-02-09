@@ -4,8 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.parinya.worklog.db.WorkDao
-import com.parinya.worklog.ui.home.HomeViewModel
+import com.parinya.worklog.db.work.WorkDao
 
 class ManageWorkViewModelFactory(
     private val dao: WorkDao

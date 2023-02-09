@@ -1,23 +1,15 @@
 package com.parinya.worklog.ui.home
 
 import android.content.Context
-import android.graphics.*
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.parinya.worklog.BR
 import com.parinya.worklog.R
-import com.parinya.worklog.db.Work
-import com.parinya.worklog.util.getAdapter
+import com.parinya.worklog.db.work.Work
 
 class WorkRecyclerViewAdapter(
     private val onClick: (Work) -> Unit = {},

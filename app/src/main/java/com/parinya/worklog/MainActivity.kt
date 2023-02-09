@@ -41,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController)
 
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
+
+        val intentAction = intent.action
+        if (intentAction.equals("com.parinya.worklog.addwork", true)) {
+            val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment()
+            navController.navigate(action)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

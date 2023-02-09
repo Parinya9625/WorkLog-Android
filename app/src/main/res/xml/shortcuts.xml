@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_add_32">
+
+        <intent
+            android:action="com.parinya.worklog.addwork"
+            android:targetPackage="com.parinya.worklog"
+            android:targetClass="com.parinya.worklog.MainActivity" />
+
+    </shortcut>
+</shortcuts>

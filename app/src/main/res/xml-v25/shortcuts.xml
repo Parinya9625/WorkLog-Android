@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="AddWork"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_32"
+        android:shortcutShortLabel="@string/shortcut_lbs_addwork"
+        android:shortcutLongLabel="@string/shortcut_lbl_addwork"
+        android:shortcutDisabledMessage="@string/shortcut_dsb_addwork">
+
+        <intent
+            android:action="com.parinya.worklog.addwork"
+            android:targetPackage="com.parinya.worklog"
+            android:targetClass="com.parinya.worklog.MainActivity" />
+
+    </shortcut>
+</shortcuts>

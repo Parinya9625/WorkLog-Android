@@ -36,4 +36,8 @@
     <string name="error_fill_out_filed">Please fill out this field.</string>
     <string name="no_search_result_found">No search result found for this keyword</string>
 
+    <string name="shortcut_lbs_addwork">Add work log</string>
+    <string name="shortcut_lbl_addwork">Add work log</string>
+    <string name="shortcut_dsb_addwork">Disable message</string>
+
 </resources>

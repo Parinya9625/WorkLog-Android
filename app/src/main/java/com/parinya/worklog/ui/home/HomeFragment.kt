@@ -130,6 +130,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                                 setMessage(getString(R.string.confirm_delete_work_message))
                                 setPositiveButton(getString(R.string.delete)) { dialog, which ->
                                     viewModel.deleteWork(works[position])
+                                    onResume()
                                 }
                                 setNegativeButton(getString(R.string.cancel)) { dialog, which ->
 

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private var showOptionMenu = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

@@ -47,7 +47,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onResume() {
         super.onResume()
-        setVisibleOptionsMenu(false)
+        setOptionsMenuVisible(false)
+        setBottomNavigationBarVisible(false)
 
         viewModel.searchQuery.observe(viewLifecycleOwner) {query ->
             dao.searchWorks(query.trim()).observe(viewLifecycleOwner) {works ->
@@ -61,7 +62,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onDestroy() {
         super.onDestroy()
-        setVisibleOptionsMenu(true)
+        setOptionsMenuVisible(true)
+        setBottomNavigationBarVisible(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -139,8 +141,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     }
 
-    private fun setVisibleOptionsMenu(value: Boolean) {
-        (activity as MainActivity).setVisibleOptionsMenu(value)
+    private fun setOptionsMenuVisible(value: Boolean) {
+        (activity as MainActivity).setOptionsMenuVisible(value)
+    }
+    private fun setBottomNavigationBarVisible(value: Boolean) {
+        (activity as MainActivity).setBottomNavigationBarVisible(value)
     }
 
 }

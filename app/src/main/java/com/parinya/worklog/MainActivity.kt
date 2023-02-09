@@ -9,11 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.parinya.worklog.databinding.FilterSheetBinding
 import com.parinya.worklog.ui.home.HomeFragmentDirections
@@ -39,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController)
+
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNavigationBar)
+        bottomNavigation.setupWithNavController(navController)
 
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
@@ -78,9 +84,14 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-    fun setVisibleOptionsMenu(value: Boolean) {
+    fun setOptionsMenuVisible(value: Boolean) {
         showOptionMenu = value
         invalidateOptionsMenu()
+    }
+
+    fun setBottomNavigationBarVisible(value: Boolean) {
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
+        bottomNavBar.isVisible = value
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -39,15 +39,20 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
 
     override fun onResume() {
         super.onResume()
-        setVisibleOptionsMenu(false)
+        setOptionsMenuVisible(false)
+        setBottomNavigationBarVisible(false)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        setVisibleOptionsMenu(true)
+        setOptionsMenuVisible(true)
+        setBottomNavigationBarVisible(true)
     }
-    private fun setVisibleOptionsMenu(value: Boolean) {
-        (activity as MainActivity).setVisibleOptionsMenu(value)
+    private fun setOptionsMenuVisible(value: Boolean) {
+        (activity as MainActivity).setOptionsMenuVisible(value)
+    }
+    private fun setBottomNavigationBarVisible(value: Boolean) {
+        (activity as MainActivity).setBottomNavigationBarVisible(value)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

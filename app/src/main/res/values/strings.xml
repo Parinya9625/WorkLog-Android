@@ -40,9 +40,12 @@
     <string name="shortcut_lbs_addwork">Add work log</string>
     <string name="shortcut_lbl_addwork">Add work log</string>
     <string name="shortcut_dsb_addwork">Disable message</string>
+    
+    <string name="intent_shortcut_addwork">com.parinya.worklog.addwork</string>
 
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_note">Notes</string>
+    
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

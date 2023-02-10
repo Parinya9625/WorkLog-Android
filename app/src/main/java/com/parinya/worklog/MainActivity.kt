@@ -69,10 +69,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleShortcutIntent() {
-        val intentAction = intent.action
-        if (intentAction.equals("com.parinya.worklog.addwork", true)) {
-            val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment()
-            navController.navigate(action)
+        when (intent.action) {
+            applicationContext.getString(R.string.intent_shortcut_addwork) -> {
+                val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment()
+                navController.navigate(action)
+            }
         }
     }
 

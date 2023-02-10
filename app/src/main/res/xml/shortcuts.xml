@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_add_32">
 
         <intent
-            android:action="com.parinya.worklog.addwork"
+            android:action="@string/intent_shortcut_addwork"
             android:targetPackage="com.parinya.worklog"
             android:targetClass="com.parinya.worklog.MainActivity" />
 

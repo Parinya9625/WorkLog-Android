@@ -23,9 +23,9 @@ import com.parinya.worklog.SharedViewModel
 import com.parinya.worklog.databinding.FilterSheetBinding
 import com.parinya.worklog.databinding.FragmentHomeBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
+import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.db.work.WorkDao
-import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.*
 
@@ -58,7 +58,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dao = WorkDatabase.getInstance(view.context).workDao()
+        dao = WorkLogDatabase.getInstance(view.context).workDao()
         val factory = HomeViewModelFactory(dao)
         viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 

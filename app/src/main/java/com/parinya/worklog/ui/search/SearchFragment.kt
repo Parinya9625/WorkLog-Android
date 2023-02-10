@@ -16,9 +16,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentSearchBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
+import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.db.work.WorkDao
-import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.ui.home.WorkLogDialogFragment
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 import com.parinya.worklog.ui.manage_work.ManageHomeType
@@ -60,7 +60,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dao = WorkDatabase.getInstance(view.context).workDao()
+        dao = WorkLogDatabase.getInstance(view.context).workDao()
         val factory = SearchViewModelFactory(dao)
         viewModel = ViewModelProvider(this, factory)[SearchViewModel::class.java]
 

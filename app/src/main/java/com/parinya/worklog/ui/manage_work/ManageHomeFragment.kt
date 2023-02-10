@@ -12,8 +12,8 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentManageHomeBinding
+import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
-import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.util.Util
 
 enum class ManageHomeType {
@@ -40,7 +40,7 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dao = WorkDatabase.getInstance(view.context).workDao()
+        val dao = WorkLogDatabase.getInstance(view.context).workDao()
         val factory = ManageWorkViewModelFactory(dao)
         viewModel = ViewModelProvider(this, factory)[ManageHomeViewModel::class.java]
 

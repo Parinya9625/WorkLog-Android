@@ -28,8 +28,9 @@
     <string name="date_range">Date Range</string>
     <string name="done">Done</string>
     <string name="clear">Clear</string>
-    <string name="search">Search</string>
-    <string name="filter">Filter</string>
+
+    <string name="menu_home_search">Search</string>
+    <string name="menu_home_filter">Filter</string>
 
     <string name="confirm_delete_work_title">Confirm delete work</string>
     <string name="confirm_delete_work_message">Are you sure you want to delete this work?</string>

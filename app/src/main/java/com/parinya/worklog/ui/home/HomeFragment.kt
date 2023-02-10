@@ -166,9 +166,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsMenuItemSelected(item: MenuItem) {
+        val context = requireContext()
         when (item.toString()) {
-            "Filter" -> filterBottomSheetDialog()
-            "Search" -> {
+            context.getString(R.string.menu_home_filter) -> filterBottomSheetDialog()
+            context.getString(R.string.menu_home_search) -> {
                 val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
                 findNavController().navigate(action)
             }

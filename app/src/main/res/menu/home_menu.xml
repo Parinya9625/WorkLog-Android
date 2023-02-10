@@ -5,11 +5,11 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_search_32"
-        android:title="@string/search"
+        android:title="@string/menu_home_search"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_filter"
         android:icon="@drawable/ic_filter_32"
-        android:title="@string/filter"
+        android:title="@string/menu_home_filter"
         app:showAsAction="always" />
 </menu>

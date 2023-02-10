@@ -3,6 +3,7 @@ package com.parinya.worklog.ui.home
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -14,22 +15,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.parinya.worklog.FilterSortedBy
 import com.parinya.worklog.R
 import com.parinya.worklog.SharedViewModel
+import com.parinya.worklog.databinding.FilterSheetBinding
 import com.parinya.worklog.databinding.FragmentHomeBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.db.work.WorkDao
 import com.parinya.worklog.db.work.WorkDatabase
 import com.parinya.worklog.ui.manage_work.ManageHomeType
-import com.parinya.worklog.util.SwipeButton
-import com.parinya.worklog.util.SwipeHelper
-import com.parinya.worklog.util.WorkTileSwipeButton
-import com.parinya.worklog.util.items
+import com.parinya.worklog.util.*
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
 
     private lateinit var viewModel: HomeViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -159,4 +159,66 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
+
+    override fun getOptionsMenu(): Int {
+        return R.menu.home_menu
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onOptionsMenuItemSelected(item: MenuItem) {
+        when (item.toString()) {
+            "Filter" -> filterBottomSheetDialog()
+            "Search" -> {
+                val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
+                findNavController().navigate(action)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun filterBottomSheetDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val sheetBinding = FilterSheetBinding.inflate(layoutInflater, null, false)
+        sheetBinding.lifecycleOwner = this
+        sheetBinding.viewModel = sharedViewModel
+
+        val textInputLayout = sheetBinding.ipfDateRange
+        Util.convertInputToDateRangePicker(
+            childFragmentManager,
+            textInputLayout,
+            onDateRangeSet = {from, to ->
+                sharedViewModel.setDateRange(from, to)
+            }
+        )
+
+        when (sharedViewModel.getSortedBy()) {
+            FilterSortedBy.DateAsc -> sheetBinding.filterSortByGroup.check(R.id.cfDateAscending)
+            FilterSortedBy.DateDes -> sheetBinding.filterSortByGroup.check(R.id.cfDateDescending)
+            FilterSortedBy.Uncompleted -> sheetBinding.filterSortByGroup.check(R.id.cfUncompleted)
+            else -> {}
+        }
+
+        sheetBinding.filterSortByGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            when (checkedIds.firstOrNull()) {
+                null -> sharedViewModel.setSortedBy(FilterSortedBy.None)
+                R.id.cfDateAscending -> sharedViewModel.setSortedBy(FilterSortedBy.DateAsc)
+                R.id.cfDateDescending -> sharedViewModel.setSortedBy(FilterSortedBy.DateDes)
+                R.id.cfUncompleted -> sharedViewModel.setSortedBy(FilterSortedBy.Uncompleted)
+            }
+        }
+
+        sheetBinding.btnClear.setOnClickListener {
+            sharedViewModel.clear()
+            sheetBinding.filterSortByGroup.clearCheck()
+        }
+
+        sheetBinding.btnDone.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setContentView(sheetBinding.root)
+        bottomSheetDialog.show()
+    }
+
+
 }

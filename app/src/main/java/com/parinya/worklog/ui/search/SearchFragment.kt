@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.parinya.worklog.MainActivity
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentSearchBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
@@ -47,8 +46,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onResume() {
         super.onResume()
-        setOptionsMenuVisible(false)
-        setBottomNavigationBarVisible(false)
 
         viewModel.searchQuery.observe(viewLifecycleOwner) {query ->
             dao.searchWorks(query.trim()).observe(viewLifecycleOwner) {works ->
@@ -58,12 +55,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 binding.bannerNoSearchResult.isVisible = query.isNotBlank() && works.isEmpty()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        setOptionsMenuVisible(true)
-        setBottomNavigationBarVisible(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,12 +131,4 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
     }
-
-    private fun setOptionsMenuVisible(value: Boolean) {
-        (activity as MainActivity).setOptionsMenuVisible(value)
-    }
-    private fun setBottomNavigationBarVisible(value: Boolean) {
-        (activity as MainActivity).setBottomNavigationBarVisible(value)
-    }
-
 }

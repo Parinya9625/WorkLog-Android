@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.parinya.worklog.SharedViewModel" />
+            type="com.parinya.worklog.ui.home.HomeViewModel" />
     </data>
 
     <LinearLayout

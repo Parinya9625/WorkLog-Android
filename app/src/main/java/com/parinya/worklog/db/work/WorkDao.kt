@@ -2,7 +2,7 @@ package com.parinya.worklog.db.work
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.parinya.worklog.FilterSortedBy
+import com.parinya.worklog.ui.home.HomeFilterSortedBy
 
 @Dao
 interface WorkDao {
@@ -36,7 +36,7 @@ interface WorkDao {
                 "CASE WHEN :sortedBy = 'DateAsc' THEN date END ASC," +
                 "CASE WHEN :sortedBy = 'DateDes' THEN date END DESC "
     )
-    fun getWorks(sortedBy: FilterSortedBy, dateRangeFrom: Long = 0, dateRangeTo: Long = 0) : LiveData<List<Work>>
+    fun getWorks(sortedBy: HomeFilterSortedBy, dateRangeFrom: Long = 0, dateRangeTo: Long = 0) : LiveData<List<Work>>
 
     @Query(
         "SELECT * FROM works " +

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.parinya.worklog.FilterSortedBy
 import com.parinya.worklog.R
-import com.parinya.worklog.SharedViewModel
 import com.parinya.worklog.databinding.FilterSheetBinding
 import com.parinya.worklog.databinding.FragmentHomeBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
@@ -32,7 +29,6 @@ import com.parinya.worklog.util.*
 class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
 
     private lateinit var viewModel: HomeViewModel
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
     private var works: List<Work> = listOf()
     private lateinit var itemTouchHelper: ItemTouchHelper
@@ -40,7 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
     private lateinit var dao: WorkDao
 
     // FILTER
-    private var _sortedBy = FilterSortedBy.None
+    private var _sortedBy = HomeFilterSortedBy.None
     private var _dateRange = Pair<Long, Long>(0, 0)
 
     override fun onCreateView(
@@ -75,11 +71,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
     override fun onResume() {
         super.onResume()
 
-        sharedViewModel.sortedBy.observe(this) {sortedBy ->
+        viewModel.sortedBy.observe(this) {sortedBy ->
             _sortedBy = sortedBy
             updateRecyclerView()
         }
-        sharedViewModel.pairDateRange.observe(this) {dateRange ->
+        viewModel.pairDateRange.observe(this) {dateRange ->
             _dateRange = dateRange
             updateRecyclerView()
         }
@@ -181,35 +177,35 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val sheetBinding = FilterSheetBinding.inflate(layoutInflater, null, false)
         sheetBinding.lifecycleOwner = this
-        sheetBinding.viewModel = sharedViewModel
+        sheetBinding.viewModel = viewModel
 
         val textInputLayout = sheetBinding.ipfDateRange
         Util.convertInputToDateRangePicker(
             childFragmentManager,
             textInputLayout,
             onDateRangeSet = {from, to ->
-                sharedViewModel.setDateRange(from, to)
+                viewModel.setDateRange(from, to)
             }
         )
 
-        when (sharedViewModel.getSortedBy()) {
-            FilterSortedBy.DateAsc -> sheetBinding.filterSortByGroup.check(R.id.cfDateAscending)
-            FilterSortedBy.DateDes -> sheetBinding.filterSortByGroup.check(R.id.cfDateDescending)
-            FilterSortedBy.Uncompleted -> sheetBinding.filterSortByGroup.check(R.id.cfUncompleted)
+        when (viewModel.getSortedBy()) {
+            HomeFilterSortedBy.DateAsc -> sheetBinding.filterSortByGroup.check(R.id.cfDateAscending)
+            HomeFilterSortedBy.DateDes -> sheetBinding.filterSortByGroup.check(R.id.cfDateDescending)
+            HomeFilterSortedBy.Uncompleted -> sheetBinding.filterSortByGroup.check(R.id.cfUncompleted)
             else -> {}
         }
 
         sheetBinding.filterSortByGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             when (checkedIds.firstOrNull()) {
-                null -> sharedViewModel.setSortedBy(FilterSortedBy.None)
-                R.id.cfDateAscending -> sharedViewModel.setSortedBy(FilterSortedBy.DateAsc)
-                R.id.cfDateDescending -> sharedViewModel.setSortedBy(FilterSortedBy.DateDes)
-                R.id.cfUncompleted -> sharedViewModel.setSortedBy(FilterSortedBy.Uncompleted)
+                null -> viewModel.setSortedBy(HomeFilterSortedBy.None)
+                R.id.cfDateAscending -> viewModel.setSortedBy(HomeFilterSortedBy.DateAsc)
+                R.id.cfDateDescending -> viewModel.setSortedBy(HomeFilterSortedBy.DateDes)
+                R.id.cfUncompleted -> viewModel.setSortedBy(HomeFilterSortedBy.Uncompleted)
             }
         }
 
         sheetBinding.btnClear.setOnClickListener {
-            sharedViewModel.clear()
+            viewModel.clearFilter()
             sheetBinding.filterSortByGroup.clearCheck()
         }
 

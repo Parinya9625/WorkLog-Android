@@ -8,7 +8,7 @@
             type="com.parinya.worklog.db.work.Work" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -16,7 +16,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="8dp"
-        app:contentPadding="16dp">
+        app:contentPadding="16dp"
+        style="?attr/materialCardViewElevatedStyle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -139,5 +140,5 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

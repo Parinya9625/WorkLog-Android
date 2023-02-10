@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController: NavController
     private lateinit var sharedViewModel: SharedViewModel
+    private val rootFragments = setOf(
+        R.id.homeFragment, R.id.noteFragment
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -83,15 +87,19 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             invalidateOptionsMenu()
+            isBottomNavBarVisible(destination.id)
         }
+    }
+
+    private fun isBottomNavBarVisible(fragmentId: Int) {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
+        bottomNav.isVisible = rootFragments.contains(fragmentId)
     }
 
     private fun setupToolbar() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         // Top level fragment (don't show back arrow)
-        val appBarConfig = AppBarConfiguration(setOf(
-            R.id.homeFragment, R.id.noteFragment
-        ))
+        val appBarConfig = AppBarConfiguration(rootFragments)
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfig)
     }

@@ -86,7 +86,6 @@ class ManageHomeViewModel(
     private fun getUpdateWork(): Work {
         return Work(
             id = _work.id,
-            viewType = _work.viewType,
             date = dateDB.value ?: 0L,
             timeIn = timeIn.value ?: "",
             timeOut = timeOut.value ?: "",

@@ -62,7 +62,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
 
         initRecyclerView(view)
 
-        binding.fabAdd.setOnClickListener {
+        binding.fabAddWork.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(type = ManageHomeType.Add)
             findNavController().navigate(action)
         }

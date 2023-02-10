@@ -48,7 +48,7 @@ class WorkRecyclerViewAdapter(
     }
 
     fun updateWorks(works: List<Work>) {
-        DiffUtil.calculateDiff(WorksDiffCallBack(worksList, works)).dispatchUpdatesTo(this)
+        DiffUtil.calculateDiff(WorksDiff(worksList, works)).dispatchUpdatesTo(this)
 
         worksList.clear()
         worksList.addAll(works)

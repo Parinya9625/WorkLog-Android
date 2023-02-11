@@ -1,4 +1,4 @@
-package com.parinya.worklog.ui.search
+package com.parinya.worklog.ui.search_work
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.db.work.WorkDao
 import kotlinx.coroutines.launch
 
-class SearchViewModel(
+class SearchWorkViewModel(
     private val dao: WorkDao
 ) : ViewModel() {
 

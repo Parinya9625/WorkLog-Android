@@ -1,4 +1,4 @@
-package com.parinya.worklog.ui.home
+package com.parinya.worklog.ui.work
 
 import android.content.Context
 import android.view.LayoutInflater

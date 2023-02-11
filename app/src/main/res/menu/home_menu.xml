@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_search"
+        android:id="@+id/menu_home_search"
         android:icon="@drawable/ic_search_32"
         android:title="@string/menu_home_search"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menu_filter"
+        android:id="@+id/menu_home_filter"
         android:icon="@drawable/ic_filter_32"
         android:title="@string/menu_home_filter"
         app:showAsAction="always" />

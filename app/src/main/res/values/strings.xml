@@ -43,7 +43,7 @@
     
     <string name="intent_shortcut_addwork">com.parinya.worklog.addwork</string>
 
-    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_work">Works</string>
     <string name="bottom_nav_note">Notes</string>
     
     <!-- TODO: Remove or change this placeholder text -->

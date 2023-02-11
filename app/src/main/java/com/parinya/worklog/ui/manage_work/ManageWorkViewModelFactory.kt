@@ -10,10 +10,10 @@ class ManageWorkViewModelFactory(
     private val dao: WorkDao
 ) : ViewModelProvider.Factory {
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ManageHomeViewModel::class.java)) {
-            return ManageHomeViewModel(dao) as T
+        if (modelClass.isAssignableFrom(ManageWorkViewModel::class.java)) {
+            return ManageWorkViewModel(dao) as T
         }
         throw IllegalArgumentException("Unknown view model class")
     }

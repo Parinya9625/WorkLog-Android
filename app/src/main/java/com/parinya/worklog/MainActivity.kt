@@ -1,25 +1,16 @@
 package com.parinya.worklog
 
-import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.parinya.worklog.ui.home.HomeFragmentDirections
-import com.parinya.worklog.util.CustomToolbarMenu
-import java.util.*
+import com.parinya.worklog.ui.work.WorkFragmentDirections
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var sharedViewModel: SharedViewModel
     private val rootFragments = setOf(
-        R.id.homeFragment, R.id.noteFragment
+        R.id.workFragment, R.id.noteFragment
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,35 +28,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupNavHostAndNavController()
-        setupToolbar()
         setupBottomNavBar()
         handleShortcutIntent()
 
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val currentFragment = navHostFragment.childFragmentManager.fragments.first()
-
-        var optionsMenu = R.menu.blank_menu
-        if (currentFragment is CustomToolbarMenu) {
-            optionsMenu = currentFragment.getOptionsMenu()
-        }
-
-        menuInflater.inflate(optionsMenu, menu)
-        return true
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val currentFragment = navHostFragment.childFragmentManager.fragments.first()
-
-        if (currentFragment is CustomToolbarMenu) {
-            currentFragment.onOptionsMenuItemSelected(item)
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -75,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleShortcutIntent() {
         when (intent.action) {
             applicationContext.getString(R.string.intent_shortcut_addwork) -> {
-                val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment()
+                val action = WorkFragmentDirections.actionHomeFragmentToManageHomeFragment()
                 navController.navigate(action)
             }
         }
@@ -86,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            invalidateOptionsMenu()
             isBottomNavBarVisible(destination.id)
         }
     }
@@ -94,14 +60,6 @@ class MainActivity : AppCompatActivity() {
     private fun isBottomNavBarVisible(fragmentId: Int) {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationBar)
         bottomNav.isVisible = rootFragments.contains(fragmentId)
-    }
-
-    private fun setupToolbar() {
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        // Top level fragment (don't show back arrow)
-        val appBarConfig = AppBarConfiguration(rootFragments)
-        setSupportActionBar(toolbar)
-        setupActionBarWithNavController(navController, appBarConfig)
     }
 
     private fun setupBottomNavBar() {

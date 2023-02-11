@@ -36,7 +36,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Util.setupToolbar(this, binding.noteToolbar, true)
+        Util.setupToolbar(this, binding.noteToolbar)
         setupViewModel()
         setupFAB()
         initRecyclerView()

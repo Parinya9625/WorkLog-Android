@@ -4,14 +4,13 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresApi
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
-import com.parinya.worklog.databinding.FragmentManageHomeBinding
+import com.parinya.worklog.databinding.FragmentManageWorkBinding
 import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.util.Util
@@ -21,17 +20,17 @@ enum class ManageHomeType {
     Edit,
 }
 
-class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
+class ManageWorkFragment : Fragment(R.layout.fragment_manage_work) {
 
-    private lateinit var binding: FragmentManageHomeBinding
-    private lateinit var viewModel: ManageHomeViewModel
-    private val args: ManageHomeFragmentArgs by navArgs()
+    private lateinit var binding: FragmentManageWorkBinding
+    private lateinit var viewModel: ManageWorkViewModel
+    private val args: ManageWorkFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_manage_home, container, false)
+        binding = FragmentManageWorkBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -40,12 +39,23 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dao = WorkLogDatabase.getInstance(view.context).workDao()
+        Util.setupToolbar(this, binding.manageWorkToolbar)
+        setupViewModel()
+        setupPageType()
+        setupPicker()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupViewModel() {
+        val dao = WorkLogDatabase.getInstance(requireContext()).workDao()
         val factory = ManageWorkViewModelFactory(dao)
-        viewModel = ViewModelProvider(this, factory)[ManageHomeViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[ManageWorkViewModel::class.java]
 
         binding.viewModel = viewModel
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupPageType() {
         val pageType = args.type
         val work = args.work
 
@@ -76,7 +86,10 @@ class ManageHomeFragment : Fragment(R.layout.fragment_manage_home) {
                 }
             }
         }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupPicker() {
         Util.convertInputToDatePicker(
             requireActivity().supportFragmentManager,
             binding.ipDate,

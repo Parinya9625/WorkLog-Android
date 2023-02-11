@@ -16,6 +16,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.parinya.worklog.R
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -26,6 +27,15 @@ import java.util.*
 class Util {
 
     companion object {
+
+        // ===== VARIABLE =====
+
+        val ROOT_FRAGMENT = setOf(
+            R.id.workFragment, R.id.noteFragment
+        )
+
+        // ===== FUNCTION =====
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun epochSecToDateString(sec: Long) : String {
             val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
@@ -190,11 +200,10 @@ class Util {
             }
         }
 
-        fun setupToolbar(fragment: Fragment, toolbar: Toolbar, isTopLevel: Boolean = false, @MenuRes menuId: Int? = null) {
+        fun setupToolbar(fragment: Fragment, toolbar: Toolbar, @MenuRes menuId: Int? = null) {
             val navController = fragment.findNavController()
             toolbar.setupWithNavController(navController, AppBarConfiguration(
-                topLevelDestinationIds = if (isTopLevel && navController.currentDestination != null)
-                    setOf(navController.currentDestination!!.id) else setOf()
+                topLevelDestinationIds = ROOT_FRAGMENT,
             ))
             if (menuId != null) {
                 toolbar.inflateMenu(menuId)

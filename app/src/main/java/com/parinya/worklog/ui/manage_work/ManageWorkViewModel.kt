@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
-class ManageHomeViewModel(
+class ManageWorkViewModel(
     private val dao: WorkDao
 ): ViewModel() {
 

@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.note.NoteFragment">
+    tools:context=".ui.work.WorkFragment">
 
     <data>
         <variable
             name="viewModel"
-            type="com.parinya.worklog.ui.note.NoteViewModel" />
+            type="com.parinya.worklog.ui.work.WorkViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -21,9 +21,11 @@
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/noteToolbar"
+                android:id="@+id/homeToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,14 +35,18 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvNotes"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/rvWorks"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:clipToPadding="false"
-                android:padding="8dp" />
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddNote"
+                android:id="@+id/fabAddWork"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -54,5 +60,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
 </layout>

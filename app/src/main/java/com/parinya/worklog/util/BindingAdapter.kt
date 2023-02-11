@@ -13,8 +13,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
 import com.parinya.worklog.db.note.Note
 import com.parinya.worklog.db.work.Work
-import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 import com.parinya.worklog.ui.note.NoteRecyclerViewAdapter
+import com.parinya.worklog.ui.work.WorkRecyclerViewAdapter
 
 
 @BindingAdapter("items")

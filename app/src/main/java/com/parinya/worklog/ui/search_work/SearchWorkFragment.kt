@@ -1,4 +1,4 @@
-package com.parinya.worklog.ui.search
+package com.parinya.worklog.ui.search_work
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,22 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.parinya.worklog.R
-import com.parinya.worklog.databinding.FragmentSearchBinding
+import com.parinya.worklog.databinding.FragmentSearchWorkBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.db.work.WorkDao
-import com.parinya.worklog.ui.home.WorkLogDialogFragment
-import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
 import com.parinya.worklog.ui.manage_work.ManageHomeType
+import com.parinya.worklog.ui.work.WorkLogDialogFragment
+import com.parinya.worklog.ui.work.WorkRecyclerViewAdapter
 import com.parinya.worklog.util.SwipeButton
 import com.parinya.worklog.util.SwipeHelper
+import com.parinya.worklog.util.Util
 import com.parinya.worklog.util.WorkTileSwipeButton
 
-class SearchFragment : Fragment(R.layout.fragment_search) {
+class SearchWorkFragment : Fragment(R.layout.fragment_search_work) {
 
-    private lateinit var binding: FragmentSearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private lateinit var binding: FragmentSearchWorkBinding
+    private lateinit var viewModel: SearchWorkViewModel
     private lateinit var dao: WorkDao
     private var works: List<Work> = listOf()
     private lateinit var itemTouchHelper: ItemTouchHelper
@@ -38,8 +39,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        binding = FragmentSearchWorkBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -60,13 +60,17 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dao = WorkLogDatabase.getInstance(view.context).workDao()
-        val factory = SearchViewModelFactory(dao)
-        viewModel = ViewModelProvider(this, factory)[SearchViewModel::class.java]
+        Util.setupToolbar(this, binding.searchWorkToolbar)
+        setupViewModel()
+        initRecyclerView()
+    }
+
+    private fun setupViewModel() {
+        dao = WorkLogDatabase.getInstance(requireContext()).workDao()
+        val factory = SearchWorkViewModelFactory(dao)
+        viewModel = ViewModelProvider(this, factory)[SearchWorkViewModel::class.java]
 
         binding.viewModel = viewModel
-
-        initRecyclerView()
     }
 
     private fun initRecyclerView() {
@@ -114,7 +118,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                         requireContext(),
                         onClick = {
                             val action =
-                                SearchFragmentDirections.actionSearchFragmentToManageHomeFragment(
+                                SearchWorkFragmentDirections.actionSearchFragmentToManageHomeFragment(
                                     work = works[position],
                                     type = ManageHomeType.Edit
                                 )

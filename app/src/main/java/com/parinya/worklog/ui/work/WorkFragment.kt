@@ -1,9 +1,8 @@
-package com.parinya.worklog.ui.home
+package com.parinya.worklog.ui.work
 
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -17,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.parinya.worklog.R
-import com.parinya.worklog.databinding.FilterSheetBinding
-import com.parinya.worklog.databinding.FragmentHomeBinding
+import com.parinya.worklog.databinding.FragmentWorkBinding
+import com.parinya.worklog.databinding.WorkFilterSheetBinding
 import com.parinya.worklog.databinding.WorkLogDialogBinding
 import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.work.Work
@@ -26,13 +25,12 @@ import com.parinya.worklog.db.work.WorkDao
 import com.parinya.worklog.ui.manage_work.ManageHomeType
 import com.parinya.worklog.util.*
 
-class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
+class WorkFragment : Fragment(R.layout.fragment_work) {
 
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var viewModel: WorkViewModel
+    private lateinit var binding: FragmentWorkBinding
     private var works: List<Work> = listOf()
     private lateinit var itemTouchHelper: ItemTouchHelper
-//    private lateinit var recyclerView: RecyclerView
     private lateinit var dao: WorkDao
 
     // FILTER
@@ -43,34 +41,44 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding = FragmentWorkBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dao = WorkLogDatabase.getInstance(view.context).workDao()
-        val factory = HomeViewModelFactory(dao)
-        viewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
-
-        binding.viewModel = viewModel
-
+        Util.setupToolbar(this, binding.homeToolbar, R.menu.home_menu)
+        setupToolbarMenuOnClick()
+        setupViewModel()
         initRecyclerView(view)
-
-        binding.fabAddWork.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(type = ManageHomeType.Add)
-            findNavController().navigate(action)
-        }
+        setupFAB()
     }
 
     override fun onResume() {
         super.onResume()
+        updateSelectedFilter()
+        updateRecyclerView()
+    }
 
+    private fun setupViewModel() {
+        dao = WorkLogDatabase.getInstance(requireContext()).workDao()
+        val factory = WorkViewModelFactory(dao)
+        viewModel = ViewModelProvider(this, factory)[WorkViewModel::class.java]
+
+        binding.viewModel = viewModel
+    }
+
+    private fun setupFAB() {
+        binding.fabAddWork.setOnClickListener {
+            val action = WorkFragmentDirections.actionHomeFragmentToManageHomeFragment(type = ManageHomeType.Add)
+            findNavController().navigate(action)
+        }
+    }
+
+    private fun updateSelectedFilter() {
         viewModel.sortedBy.observe(this) {sortedBy ->
             _sortedBy = sortedBy
             updateRecyclerView()
@@ -79,8 +87,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
             _dateRange = dateRange
             updateRecyclerView()
         }
-
-        updateRecyclerView()
     }
 
     private fun updateRecyclerView() {
@@ -91,9 +97,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
     }
 
     private fun initRecyclerView(view: View) {
-//        recyclerView = view.findViewById<RecyclerView>(R.id.rvWorks)
         binding.rvWorks.apply {
-//            layoutManager = LinearLayoutManager(context)
 
             val gridColumnCount = resources.getInteger(R.integer.grid_column_count)
             layoutManager = GridLayoutManager(context, gridColumnCount)
@@ -139,7 +143,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
                         requireContext(),
                         onClick = {
                             val action =
-                                HomeFragmentDirections.actionHomeFragmentToManageHomeFragment(
+                                WorkFragmentDirections.actionHomeFragmentToManageHomeFragment(
                                     work = works[position],
                                     type = ManageHomeType.Edit
                                 )
@@ -156,26 +160,25 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    override fun getOptionsMenu(): Int {
-        return R.menu.home_menu
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onOptionsMenuItemSelected(item: MenuItem) {
-        val context = requireContext()
-        when (item.toString()) {
-            context.getString(R.string.menu_home_filter) -> filterBottomSheetDialog()
-            context.getString(R.string.menu_home_search) -> {
-                val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
-                findNavController().navigate(action)
+    fun setupToolbarMenuOnClick() {
+        binding.homeToolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_home_search -> {
+                    val action = WorkFragmentDirections.actionHomeFragmentToSearchFragment()
+                    findNavController().navigate(action)
+                }
+                R.id.menu_home_filter -> filterBottomSheetDialog()
             }
+
+            true
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun filterBottomSheetDialog() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
-        val sheetBinding = FilterSheetBinding.inflate(layoutInflater, null, false)
+        val sheetBinding = WorkFilterSheetBinding.inflate(layoutInflater, null, false)
         sheetBinding.lifecycleOwner = this
         sheetBinding.viewModel = viewModel
 
@@ -216,6 +219,5 @@ class HomeFragment : Fragment(R.layout.fragment_home), CustomToolbarMenu {
         bottomSheetDialog.setContentView(sheetBinding.root)
         bottomSheetDialog.show()
     }
-
 
 }

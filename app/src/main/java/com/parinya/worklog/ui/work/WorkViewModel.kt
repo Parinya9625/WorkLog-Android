@@ -1,4 +1,4 @@
-package com.parinya.worklog.ui.home
+package com.parinya.worklog.ui.work
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -12,7 +12,7 @@ import com.parinya.worklog.util.Util
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(
+class WorkViewModel(
     private val dao: WorkDao
 ): ViewModel() {
 

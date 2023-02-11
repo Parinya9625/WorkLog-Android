@@ -2,7 +2,7 @@ package com.parinya.worklog.db.work
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.parinya.worklog.ui.home.HomeFilterSortedBy
+import com.parinya.worklog.ui.work.HomeFilterSortedBy
 
 @Dao
 interface WorkDao {

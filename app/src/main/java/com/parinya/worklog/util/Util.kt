@@ -3,9 +3,15 @@ package com.parinya.worklog.util
 import android.os.Build
 import android.text.InputType
 import android.widget.EditText
+import androidx.annotation.MenuRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -183,5 +189,17 @@ class Util {
                 }
             }
         }
+
+        fun setupToolbar(fragment: Fragment, toolbar: Toolbar, isTopLevel: Boolean = false, @MenuRes menuId: Int? = null) {
+            val navController = fragment.findNavController()
+            toolbar.setupWithNavController(navController, AppBarConfiguration(
+                topLevelDestinationIds = if (isTopLevel && navController.currentDestination != null)
+                    setOf(navController.currentDestination!!.id) else setOf()
+            ))
+            if (menuId != null) {
+                toolbar.inflateMenu(menuId)
+            }
+        }
+
     }
 }

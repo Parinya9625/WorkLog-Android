@@ -11,25 +11,20 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.parinya.worklog.R
+import com.parinya.worklog.db.note.Note
 import com.parinya.worklog.db.work.Work
 import com.parinya.worklog.ui.home.WorkRecyclerViewAdapter
+import com.parinya.worklog.ui.note.NoteRecyclerViewAdapter
 
 
 @BindingAdapter("items")
-fun RecyclerView.items(items: List<Work>?) {
-    val adapter = getAdapter(this)
+fun RecyclerView.items(items: List<*>?) {
     if (items != null) {
-        adapter.updateWorks(items)
-    }
-}
-
-fun getAdapter(recyclerView: RecyclerView): WorkRecyclerViewAdapter {
-    if (recyclerView.adapter != null && recyclerView.adapter is WorkRecyclerViewAdapter) {
-        return recyclerView.adapter as WorkRecyclerViewAdapter
-    } else {
-        val adapter = WorkRecyclerViewAdapter()
-        recyclerView.adapter = adapter
-        return adapter
+        when (this.adapter) {
+            is WorkRecyclerViewAdapter -> (this.adapter as WorkRecyclerViewAdapter).updateWorks(items as List<Work>)
+            is NoteRecyclerViewAdapter -> (this.adapter as NoteRecyclerViewAdapter).updateNotes(items as List<Note>)
+            else -> {}
+        }
     }
 }
 

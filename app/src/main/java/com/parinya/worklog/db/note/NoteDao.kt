@@ -1,5 +1,6 @@
 package com.parinya.worklog.db.note
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -15,6 +16,6 @@ interface NoteDao {
     suspend fun deleteNote(note: Note)
 
     @Query("SELECT * FROM notes")
-    fun getNotes(): List<Note>
+    fun getNotes(): LiveData<List<Note>>
 
 }

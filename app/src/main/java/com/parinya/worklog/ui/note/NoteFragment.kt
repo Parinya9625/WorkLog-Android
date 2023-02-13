@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.parinya.worklog.R
@@ -40,7 +41,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         setupViewModel()
         setupFAB()
         initRecyclerView()
-
     }
 
     override fun onResume() {
@@ -58,8 +58,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private fun setupFAB() {
         binding.fabAddNote.setOnClickListener {
-            viewModel.addNote()
-            onResume()
+            val action = NoteFragmentDirections.actionNoteFragmentToManageNoteFragment()
+            findNavController().navigate(action)
         }
     }
 

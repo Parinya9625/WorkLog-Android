@@ -45,5 +45,14 @@
         android:id="@+id/noteFragment"
         android:name="com.parinya.worklog.ui.note.NoteFragment"
         android:label="Notes"
-        tools:layout="@layout/fragment_note" />
+        tools:layout="@layout/fragment_note" >
+        <action
+            android:id="@+id/action_noteFragment_to_manageNoteFragment"
+            app:destination="@id/manageNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/manageNoteFragment"
+        android:name="com.parinya.worklog.ui.manage_note.ManageNoteFragment"
+        android:label="Manage Note"
+        tools:layout="@layout/fragment_manage_note" />
 </navigation>

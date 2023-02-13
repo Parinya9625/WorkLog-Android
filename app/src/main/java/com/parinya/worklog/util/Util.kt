@@ -2,6 +2,7 @@ package com.parinya.worklog.util
 
 import android.os.Build
 import android.text.InputType
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.annotation.MenuRes
 import androidx.annotation.RequiresApi
@@ -207,6 +208,25 @@ class Util {
             ))
             if (menuId != null) {
                 toolbar.inflateMenu(menuId)
+            }
+        }
+
+        fun setupClearFocusWhenDone(
+            textInputLayout: TextInputLayout,
+        ) {
+            if (textInputLayout.editText != null) {
+                textInputLayout.editText!!.apply {
+
+                    imeOptions = EditorInfo.IME_ACTION_DONE
+                    setOnEditorActionListener { textView, actionId, keyEvent ->
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            textView.clearFocus()
+                        }
+
+                        false
+                    }
+
+                }
             }
         }
 

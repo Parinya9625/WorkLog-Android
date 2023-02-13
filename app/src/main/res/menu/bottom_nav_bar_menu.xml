@@ -9,4 +9,12 @@
         android:id="@+id/noteFragment"
         android:icon="@drawable/ic_note_32"
         android:title="@string/bottom_nav_note"/>
+    <item
+        android:id="@+id/todoFragment"
+        android:icon="@drawable/ic_checklist_32"
+        android:title="@string/bottom_nav_todo"/>
+    <item
+        android:id="@+id/reminderFragment"
+        android:icon="@drawable/ic_notifications_32"
+        android:title="@string/bottom_nav_reminder"/>
 </menu>

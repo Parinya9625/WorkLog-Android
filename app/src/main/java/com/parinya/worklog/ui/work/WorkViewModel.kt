@@ -18,17 +18,17 @@ class WorkViewModel(
 
     // ========== Filter ==========
 
-    val sortedBy = MutableLiveData(HomeFilterSortedBy.None)
-    val _sortedBy: LiveData<HomeFilterSortedBy> = sortedBy
+    val _sortedBy = MutableLiveData(HomeFilterSortedBy.None)
+    val sortedBy: LiveData<HomeFilterSortedBy> = _sortedBy
 
-    val dateRange = MutableLiveData<String>()
-    val _dateRange: LiveData<String> = dateRange
+    val _dateRange = MutableLiveData<String>()
+    val dateRange: LiveData<String> = _dateRange
 
-    val pairDateRange = MutableLiveData<Pair<Long, Long>>()
-    val _pairDateRange: LiveData<Pair<Long, Long>> = pairDateRange
+    val _pairDateRange = MutableLiveData<Pair<Long, Long>>()
+    val pairDateRange: LiveData<Pair<Long, Long>> = _pairDateRange
 
     fun setSortedBy(filter: HomeFilterSortedBy) {
-        sortedBy.value = filter
+        _sortedBy.value = filter
     }
 
     fun getSortedBy(): HomeFilterSortedBy {
@@ -39,18 +39,18 @@ class WorkViewModel(
     fun setDateRange(from: Calendar, to: Calendar) {
         val fromStr = Util.dateToString(from.timeInMillis, "dd MMM y")
         val toStr = Util.dateToString(to.timeInMillis, "dd MMM y")
-        dateRange.value = "$fromStr ➜ $toStr"
+        _dateRange.value = "$fromStr ➜ $toStr"
 
-        pairDateRange.value = Pair(
+        _pairDateRange.value = Pair(
             from.timeInMillis,
             to.timeInMillis,
         )
     }
 
     fun clearFilter() {
-        sortedBy.value = HomeFilterSortedBy.None
-        dateRange.value = ""
-        pairDateRange.value = Pair(0, 0)
+        _sortedBy.value = HomeFilterSortedBy.None
+        _dateRange.value = ""
+        _pairDateRange.value = Pair(0, 0)
     }
 
     // ========== Database ==========

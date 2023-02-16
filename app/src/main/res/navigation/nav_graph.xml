@@ -53,6 +53,16 @@
     <fragment
         android:id="@+id/manageNoteFragment"
         android:name="com.parinya.worklog.ui.manage_note.ManageNoteFragment"
-        android:label="Manage Note"
-        tools:layout="@layout/fragment_manage_note" />
+        android:label="{type} Note"
+        tools:layout="@layout/fragment_manage_note">
+        <argument
+            android:name="note"
+            android:defaultValue="@null"
+            app:argType="com.parinya.worklog.db.note.Note"
+            app:nullable="true" />
+        <argument
+            android:name="type"
+            android:defaultValue="Add"
+            app:argType="com.parinya.worklog.ui.manage_note.ManageNoteType" />
+    </fragment>
 </navigation>

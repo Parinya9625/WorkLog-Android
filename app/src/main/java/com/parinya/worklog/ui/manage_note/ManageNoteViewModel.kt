@@ -12,16 +12,37 @@ class ManageNoteViewModel(
     private val dao: NoteDao
 ): ViewModel() {
 
-    val _title = MutableLiveData<String>()
-    val title: LiveData<String> = _title
+    var _note: Note = Note()
 
-    val _text = MutableLiveData<String>()
-    val text: LiveData<String> = _text
+    val _content = MutableLiveData<String>()
+    val content: LiveData<String> = _content
+
+    private fun getTitleAndText(): List<String> {
+        val split = content.value.toString().lines()
+        val title = split.first().ifBlank { "" }
+        val text = if (split.size >= 2) {
+            split.minus(split.first()).joinToString(separator = "\n")
+        } else { "" }
+
+        return listOf(title, text)
+    }
 
     private fun getNote(): Note {
+        val note = getTitleAndText()
+
         return Note(
-            title = title.value ?: "",
-            text = text.value ?: "",
+            title = note.first(),
+            text = note.last(),
+        )
+    }
+
+    private fun getUpdateNote(): Note {
+        val note = getTitleAndText()
+
+        return Note(
+            id = _note.id,
+            title = note.first(),
+            text = note.last(),
         )
     }
 
@@ -29,5 +50,16 @@ class ManageNoteViewModel(
         viewModelScope.launch {
             dao.insertNote(getNote())
         }
+    }
+
+    fun updateNote() {
+        viewModelScope.launch {
+            dao.updateNote(getUpdateNote())
+        }
+    }
+
+    fun setNote(note: Note) {
+        _note = note
+        _content.value = "${note.title}\n${note.text}"
     }
 }

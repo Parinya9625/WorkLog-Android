@@ -21,15 +21,23 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/note_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{note.title}" />
-
-            <TextView
+                autoHide="@{note.title}"
                 android:id="@+id/note_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{note.title}"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                autoHide="@{note.text}"
+                android:id="@+id/note_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="4"
                 android:text="@{note.text}" />
         </LinearLayout>
 

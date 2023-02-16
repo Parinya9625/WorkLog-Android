@@ -1,7 +1,6 @@
 package com.parinya.worklog.ui.note
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import com.parinya.worklog.databinding.FragmentNoteBinding
 import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.note.Note
 import com.parinya.worklog.db.note.NoteDao
+import com.parinya.worklog.ui.manage_note.ManageNoteType
 import com.parinya.worklog.util.Util
 import com.parinya.worklog.util.items
 
@@ -58,7 +58,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private fun setupFAB() {
         binding.fabAddNote.setOnClickListener {
-            val action = NoteFragmentDirections.actionNoteFragmentToManageNoteFragment()
+            val action = NoteFragmentDirections.actionNoteFragmentToManageNoteFragment(type = ManageNoteType.Add)
             findNavController().navigate(action)
         }
     }
@@ -69,8 +69,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
             adapter = NoteRecyclerViewAdapter(
                 onClick = {
-                    viewModel.deleteNote(it)
-                    onResume()
+                    val action = NoteFragmentDirections.actionNoteFragmentToManageNoteFragment(
+                        type = ManageNoteType.Edit,
+                        note = it,
+                    )
+                    findNavController().navigate(action)
                 }
             )
 
@@ -79,7 +82,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private fun updateRecyclerView() {
         dao.getNotes().observe(viewLifecycleOwner) { notesList ->
-            Log.d("WorkLog >", "${notesList.size} | ${notesList}")
             binding.rvNotes.items(notesList)
             notes = notesList
         }

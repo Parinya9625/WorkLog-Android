@@ -19,4 +19,5 @@ data class Note(
     val color: Int = Color.WHITE,
     val tags: List<String> = listOf(),
     val isPinned: Boolean = false,
+
 ) : Parcelable

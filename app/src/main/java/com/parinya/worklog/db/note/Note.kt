@@ -16,7 +16,7 @@ data class Note(
 
     val title: String = "",
     val text: String = "",
-    val color: Int = Color.WHITE,
+    val color: Int = Color.TRANSPARENT,
     val tags: List<String> = listOf(),
     val isPinned: Boolean = false,
 

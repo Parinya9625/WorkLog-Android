@@ -1,5 +1,6 @@
 package com.parinya.worklog.ui.manage_note
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,35 +15,29 @@ class ManageNoteViewModel(
 
     var _note: Note = Note()
 
-    val _content = MutableLiveData<String>()
-    val content: LiveData<String> = _content
+    val _title = MutableLiveData<String>()
+    val title: LiveData<String> = _title
 
-    private fun getTitleAndText(): List<String> {
-        val split = content.value.toString().lines()
-        val title = split.first().ifBlank { "" }
-        val text = if (split.size >= 2) {
-            split.minus(split.first()).joinToString(separator = "\n")
-        } else { "" }
+    val _text = MutableLiveData<String>()
+    val text: LiveData<String> = _text
 
-        return listOf(title, text)
-    }
+    val _color = MutableLiveData<Int>()
+    val color: LiveData<Int> = _color
 
     private fun getNote(): Note {
-        val note = getTitleAndText()
-
         return Note(
-            title = note.first(),
-            text = note.last(),
+            title = _title.value ?: "",
+            text = _text.value ?: "",
+            color = _color.value ?: Color.TRANSPARENT,
         )
     }
 
     private fun getUpdateNote(): Note {
-        val note = getTitleAndText()
-
         return Note(
             id = _note.id,
-            title = note.first(),
-            text = note.last(),
+            title = _title.value ?: "",
+            text = _text.value ?: "",
+            color = _color.value ?: Color.TRANSPARENT,
         )
     }
 
@@ -60,6 +55,8 @@ class ManageNoteViewModel(
 
     fun setNote(note: Note) {
         _note = note
-        _content.value = "${note.title}\n${note.text}"
+        _title.value = note.title
+        _text.value = note.text
+        _color.value = note.color
     }
 }

@@ -8,4 +8,19 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="icon_background">#FF4F4EAD</color>
+
+    <!-- All note color -->
+    <color name="note_bg_00">#00000000</color>
+    <color name="note_bg_01">#fbb1a8</color>
+    <color name="note_bg_02">#f3a078</color>
+    <color name="note_bg_03">#fff9b8</color>
+    <color name="note_bg_04">#e4f5d1</color>
+    <color name="note_bg_05">#b5ddd4</color>
+    <color name="note_bg_06">#d5e4eb</color>
+    <color name="note_bg_07">#aecedd</color>
+    <color name="note_bg_08">#d5bedb</color>
+    <color name="note_bg_09">#f7e2dd</color>
+    <color name="note_bg_10">#eae4d6</color>
+    <color name="note_bg_11">#f0f0f0</color>
+
 </resources>

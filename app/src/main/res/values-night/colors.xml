@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- All note color -->
+    <color name="note_bg_00">#00000000</color>
+    <color name="note_bg_01">#78162f</color>
+    <color name="note_bg_02">#6a2818</color>
+    <color name="note_bg_03">#7d4900</color>
+    <color name="note_bg_04">#264b3a</color>
+    <color name="note_bg_05">#0d615f</color>
+    <color name="note_bg_06">#226474</color>
+    <color name="note_bg_07">#274257</color>
+    <color name="note_bg_08">#472e58</color>
+    <color name="note_bg_09">#6a394e</color>
+    <color name="note_bg_10">#4a4339</color>
+    <color name="note_bg_11">#242328</color>
+
+</resources>

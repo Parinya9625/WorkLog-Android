@@ -1,28 +1,30 @@
 package com.parinya.worklog.ui.manage_note
 
-import android.graphics.Typeface
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.TextWatcher
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.forEach
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.card.MaterialCardView
 import com.parinya.worklog.R
 import com.parinya.worklog.databinding.FragmentManageNoteBinding
+import com.parinya.worklog.databinding.SheetNoteBgColorSelectorBinding
 import com.parinya.worklog.db.WorkLogDatabase
 import com.parinya.worklog.db.note.Note
 import com.parinya.worklog.db.note.NoteDao
 import com.parinya.worklog.util.Util
+
 
 enum class ManageNoteType {
     Add,
@@ -51,8 +53,24 @@ class ManageNoteFragment : Fragment(R.layout.fragment_manage_note) {
         setupViewModel()
 //        setupToolbarMenuOnClick()
         setupPageType()
-        initEditText() // must run before addTextChangedListener
-        setupRichEditText()
+//        initEditText() // must run before addTextChangedListener
+//        setupRichEditText()
+        setupEditText()
+        setupNoteFormat()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.color.observe(viewLifecycleOwner) {
+            binding.rootNote.setBackgroundResource(Util.convertNoteColorToResource(it ?: Color.TRANSPARENT))
+            requireActivity().window.statusBarColor = getColor(requireContext(), Util.convertNoteColorToResource(it ?: Color.TRANSPARENT))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().window.statusBarColor = Color.TRANSPARENT
     }
 
     private fun setupViewModel() {
@@ -67,7 +85,7 @@ class ManageNoteFragment : Fragment(R.layout.fragment_manage_note) {
         binding.manageNoteToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_manage_note_save -> {
-                    if (!viewModel.content.value.isNullOrBlank()) {
+                    if (!viewModel.title.value.isNullOrBlank() || !viewModel.text.value.isNullOrBlank()) {
                         viewModel.saveNote()
                         findNavController().navigateUp()
                     } else {
@@ -84,7 +102,7 @@ class ManageNoteFragment : Fragment(R.layout.fragment_manage_note) {
         binding.manageNoteToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_manage_note_save -> {
-                    if (!viewModel.content.value.isNullOrBlank()) {
+                    if (!viewModel.title.value.isNullOrBlank() || !viewModel.text.value.isNullOrBlank()) {
                         viewModel.updateNote()
                         findNavController().navigateUp()
                     } else {
@@ -109,55 +127,95 @@ class ManageNoteFragment : Fragment(R.layout.fragment_manage_note) {
         }
     }
 
-    private fun setupRichEditText() {
-        val textLine = viewModel.content.value.toString().lines()
+//    private fun setupRichEditText() {
+//        val textLine = viewModel.content.value.toString().lines()
+//
+//        binding.ipNoteText.editText!!.addTextChangedListener(object : TextWatcher {
+//            var canUpdateTitle = textLine.size <= 1
+//            var canUpdateText = textLine.size > 1
+//
+//            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+//
+//            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+//
+//            override fun afterTextChanged(editable: Editable) {
+//                val split = editable.toString().lines()
+//
+//                if (split.size <= 1 && canUpdateTitle) {
+//                    canUpdateTitle = false
+//                    canUpdateText = true
+//
+//                    binding.ipNoteText.editText?.let {
+//                        setSpanTitle(it, editable.toString())
+//                    }
+//                } else if (split.size > 1 && canUpdateText) {
+//                    canUpdateTitle = true
+//                    canUpdateText = false
+//
+//                    binding.ipNoteText.editText?.let {
+//                        setSpanTitle(it, editable.toString())
+//                    }
+//                }
+//            }
+//        })
+//    }
 
-        binding.ipNoteText.editText!!.addTextChangedListener(object : TextWatcher {
-            var canUpdateTitle = textLine.size <= 1
-            var canUpdateText = textLine.size > 1
+//    private fun setSpanTitle(editText: EditText, text: String) {
+//        val split = text.lines()
+//
+//        val span = SpannableStringBuilder(text).apply {
+//            setSpan(StyleSpan(Typeface.BOLD), 0, split.first().length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+//            setSpan(AbsoluteSizeSpan((32 * requireContext().resources.displayMetrics.density).toInt()), 0, split.first().length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+//        }
+//
+//        editText.text = span
+//        editText.setSelection(text.length)
+//    }
 
-            override fun beforeTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+//    private fun initEditText() {
+//        binding.ipNoteText.editText?.let {
+//            setSpanTitle(it, viewModel.content.value.toString())
+//        }
+//    }
 
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+    private fun setupEditText() {
+        binding.ipNoteTitle.editText?.setOnFocusChangeListener { view, isFocus ->
+            binding.llNoteCardFormat.isVisible = true
+            binding.llNoteTextFormat.isVisible = false
+        }
+        binding.ipNoteText.editText?.setOnFocusChangeListener { view, isFocus ->
+            binding.llNoteCardFormat.isVisible = true
+            binding.llNoteTextFormat.isVisible = true
+        }
 
-            override fun afterTextChanged(editable: Editable) {
-                val split = editable.toString().lines()
-
-                if (split.size <= 1 && canUpdateTitle) {
-                    canUpdateTitle = false
-                    canUpdateText = true
-
-                    binding.ipNoteText.editText?.let {
-                        setSpanTitle(it, editable.toString())
-                    }
-                } else if (split.size > 1 && canUpdateText) {
-                    canUpdateTitle = true
-                    canUpdateText = false
-
-                    binding.ipNoteText.editText?.let {
-                        setSpanTitle(it, editable.toString())
-                    }
-                }
+        // Tab empty space to focus on ipNoteText and show keyboard
+        binding.llNoteEditor.setOnClickListener {
+            if (binding.ipNoteText.requestFocus()) {
+                val imm: InputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(binding.ipNoteText.editText, InputMethodManager.SHOW_IMPLICIT)
             }
-        })
+        }
     }
 
-    private fun setSpanTitle(editText: EditText, text: String) {
-        val split = text.lines()
-
-        val span = SpannableStringBuilder(text).apply {
-            setSpan(StyleSpan(Typeface.BOLD), 0, split.first().length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            setSpan(AbsoluteSizeSpan((32 * requireContext().resources.displayMetrics.density).toInt()), 0, split.first().length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-
-        editText.text = span
-        editText.setSelection(text.length)
+    private fun setupNoteFormat() {
+        binding.btnNoteBgColor.setOnClickListener { noteBgColorSelectorSheet() }
     }
 
-    private fun initEditText() {
-        binding.ipNoteText.editText?.let {
-            setSpanTitle(it, viewModel.content.value.toString())
+    private fun noteBgColorSelectorSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val sheetBinding = SheetNoteBgColorSelectorBinding.inflate(layoutInflater, null, false)
+        sheetBinding.lifecycleOwner = this
+
+        sheetBinding.glColorSelector.forEach {
+            val card = it as MaterialCardView
+
+            it.setOnClickListener {
+                viewModel._color.value = card.cardBackgroundColor.defaultColor
+            }
         }
+
+        bottomSheetDialog.setContentView(sheetBinding.root)
+        bottomSheetDialog.show()
     }
 
 }

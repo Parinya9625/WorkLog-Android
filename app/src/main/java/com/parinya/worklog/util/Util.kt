@@ -1,5 +1,6 @@
 package com.parinya.worklog.util
 
+import android.graphics.Color
 import android.os.Build
 import android.text.InputType
 import android.view.inputmethod.EditorInfo
@@ -227,6 +228,24 @@ class Util {
                     }
 
                 }
+            }
+        }
+
+        fun convertNoteColorToResource(color: Int): Int {
+
+            return when (color) {
+                Color.parseColor("#fbb1a8"), Color.parseColor("#78162f") -> R.color.note_bg_01
+                Color.parseColor("#f3a078"), Color.parseColor("#6a2818") -> R.color.note_bg_02
+                Color.parseColor("#fff9b8"), Color.parseColor("#7d4900") -> R.color.note_bg_03
+                Color.parseColor("#e4f5d1"), Color.parseColor("#264b3a") -> R.color.note_bg_04
+                Color.parseColor("#b5ddd4"), Color.parseColor("#0d615f") -> R.color.note_bg_05
+                Color.parseColor("#d5e4eb"), Color.parseColor("#226474") -> R.color.note_bg_06
+                Color.parseColor("#aecedd"), Color.parseColor("#274257") -> R.color.note_bg_07
+                Color.parseColor("#d5bedb"), Color.parseColor("#472e58") -> R.color.note_bg_08
+                Color.parseColor("#f7e2dd"), Color.parseColor("#6a394e") -> R.color.note_bg_09
+                Color.parseColor("#eae4d6"), Color.parseColor("#4a4339") -> R.color.note_bg_10
+                Color.parseColor("#f0f0f0"), Color.parseColor("#242328") -> R.color.note_bg_11
+                else -> R.color.note_bg_00
             }
         }
 

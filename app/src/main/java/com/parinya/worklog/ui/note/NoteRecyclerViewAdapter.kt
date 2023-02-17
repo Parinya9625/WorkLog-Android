@@ -1,13 +1,15 @@
 package com.parinya.worklog.ui.note
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.parinya.worklog.BR
 import com.parinya.worklog.databinding.NoteTileBinding
 import com.parinya.worklog.db.note.Note
+import com.parinya.worklog.util.Util
 
 class NoteRecyclerViewAdapter(
     private val onClick: (Note) -> Unit = {},
@@ -41,11 +43,20 @@ class NoteRecyclerViewAdapter(
 
 }
 
-class ViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
+class ViewHolder(val binding: NoteTileBinding): RecyclerView.ViewHolder(binding.root) {
     fun bind(note: Note, onClick: (Note) -> Unit) {
         binding.apply {
             setVariable(BR.note, note)
             root.setOnClickListener { onClick(note) }
+
+            if (note.color != Color.TRANSPARENT) {
+                noteTile.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        Util.convertNoteColorToResource(note.color)
+                    )
+                )
+            }
         }
     }
 }

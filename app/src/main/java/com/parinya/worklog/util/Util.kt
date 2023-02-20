@@ -231,7 +231,7 @@ class Util {
             }
         }
 
-        fun convertNoteColorToResource(color: Int): Int {
+        fun convertNoteColorToResource(color: Int): Int? {
 
             return when (color) {
                 Color.parseColor("#fbb1a8"), Color.parseColor("#78162f") -> R.color.note_bg_01
@@ -245,7 +245,7 @@ class Util {
                 Color.parseColor("#f7e2dd"), Color.parseColor("#6a394e") -> R.color.note_bg_09
                 Color.parseColor("#eae4d6"), Color.parseColor("#4a4339") -> R.color.note_bg_10
                 Color.parseColor("#f0f0f0"), Color.parseColor("#242328") -> R.color.note_bg_11
-                else -> R.color.note_bg_00
+                else -> null
             }
         }
 

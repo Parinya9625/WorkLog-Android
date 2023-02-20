@@ -63,8 +63,8 @@ class ManageNoteFragment : Fragment(R.layout.fragment_manage_note) {
         super.onResume()
 
         viewModel.color.observe(viewLifecycleOwner) {
-            binding.rootNote.setBackgroundResource(Util.convertNoteColorToResource(it ?: Color.TRANSPARENT))
-            requireActivity().window.statusBarColor = getColor(requireContext(), Util.convertNoteColorToResource(it ?: Color.TRANSPARENT))
+            binding.rootNote.setBackgroundResource(Util.convertNoteColorToResource(it) ?: Color.TRANSPARENT)
+            requireActivity().window.statusBarColor = getColor(requireContext(), Util.convertNoteColorToResource(it) ?: R.color.note_bg_00)
         }
     }
 

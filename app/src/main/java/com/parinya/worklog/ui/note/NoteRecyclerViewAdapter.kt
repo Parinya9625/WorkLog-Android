@@ -49,11 +49,12 @@ class ViewHolder(val binding: NoteTileBinding): RecyclerView.ViewHolder(binding.
             setVariable(BR.note, note)
             root.setOnClickListener { onClick(note) }
 
-            if (note.color != Color.TRANSPARENT) {
+            val resourceColor = Util.convertNoteColorToResource(note.color)
+            if (resourceColor != Color.TRANSPARENT && resourceColor != null) {
                 noteTile.setCardBackgroundColor(
                     ContextCompat.getColor(
                         root.context,
-                        Util.convertNoteColorToResource(note.color)
+                        resourceColor,
                     )
                 )
             }

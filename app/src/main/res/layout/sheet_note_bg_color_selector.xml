@@ -17,7 +17,7 @@
             android:paddingBottom="12dp"
             android:text="Color"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <GridLayout
             android:id="@+id/glColorSelector"
